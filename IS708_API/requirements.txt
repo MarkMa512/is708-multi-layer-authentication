@@ -1,2 +1,5 @@
 websockets
 pydub
+scikit-learn
+librosa
+tensorflow
