@@ -43,6 +43,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#directries">Directries</a></li>
       </ul>
     </li>
     <li>
@@ -71,6 +72,7 @@
 - `IS708_Android`: Android Front End Application  
 
 - `IS708_API`: Python Backend Server  
+  - `model_training`: Training data and Jupyter Note Booking for the Classification Model Building 
 
 - `media`: Photos and Screenshots  
 
@@ -135,18 +137,16 @@ Enter your sudo password when prompted.
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [ ] (C1) Building the base Android Application for recording and saving IMU and audio data.
+- [ ] (C2) Building a Speaker recognition model (Python code on server)
+- [ ] (C3) Building an IMU gesture pattern recognition model (Python code on server)
+- [ ] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
+- [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)
+- [ ] (C6) Building the unified multi-modal recognition model. (Single model with both inputs instead of 2 separate models. Needs to be implemented on python server offline)
 
 See the [open issues](https://github.com/MarkMa512/is708-multi-layer-authentication/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- CONTRIBUTING -->
