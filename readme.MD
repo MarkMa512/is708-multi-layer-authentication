@@ -18,7 +18,7 @@
     <!-- <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
   </a>
 
-  <h3 align="center">IS708 Mobile and Distibuted System</h3>
+  <h3 align="center">IS708 Mobile and Distributed System</h3>
 
   <p align="center">Programming Assignment
     <br />
@@ -66,14 +66,26 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+### Directries
 
+- `IS708_Android`: Android Front End Application  
+
+- `IS708_API`: Python Backend Server  
+
+- `media`: Photos and Screenshots  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Built With
 
+- [Android Studio](https://developer.android.com/studio)
+- [Python 3.9.12](https://www.python.org/downloads/release/python-3912/)
+    - [librosa](https://librosa.org/doc/latest/index.html)
+    - [NumPy](https://numpy.org/)
+    - [pandas](https://pandas.pydata.org/)
+    - [scikit-learn](https://scikit-learn.org/stable/)
+    - [TensorFlow](https://www.tensorflow.org/) 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -85,20 +97,40 @@
 
 ### Prerequisites
 
-
+1. Ensure [Android Studio](ttps://developer.android.com/studio) is installed. 
+2. Ensure [Python 3.9](https://www.python.org/downloads/release/python-3912/) or later is installed
+    - Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
+    - Linux and macOS (Install using Terminal):  
+        ```sh 
+        python -m ensurepip --upgrade
+        ```
+    - Windows(Install using CMD):
+        ```cmd
+        py -m ensurepip --upgrade
+        ```
 
 ### Installation
 
+Enter the `IS708_API` folder with Terminal
+```sh
+cd IS708_API
+```
+Run `install_Linux` or `install_macOS` according to your Operating System. 
 
+```sh
+./install_macOS.sh
+```
+Kindly note that Homebrew Package Manager will be installed on macOS. 
 
+```sh
+./install_Linux.sh
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap

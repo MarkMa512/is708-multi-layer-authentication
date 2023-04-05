@@ -5,4 +5,6 @@
 
 brew install ffmpeg
 brew install android-platform-tools
+
+# pip install relevent packages
 pip install -r requirements.txt
