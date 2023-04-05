@@ -216,3 +216,6 @@ google-services.json
 .externalNativeBuild
 .cxx
 local.properties
+
+# trained model file
+*.pkl
