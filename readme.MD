@@ -97,7 +97,7 @@
 
 ### Prerequisites
 
-1. Ensure [Android Studio](ttps://developer.android.com/studio) is installed. 
+1. Ensure [Android Studio](https://developer.android.com/studio) is installed. 
 2. Ensure [Python 3.9](https://www.python.org/downloads/release/python-3912/) or later is installed
     - Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
     - Linux and macOS (Install using Terminal):  
@@ -125,7 +125,7 @@ Kindly note that Homebrew Package Manager will be installed on macOS.
 ```sh
 ./install_Linux.sh
 ```
-
+Enter your sudo password when prompted. 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
