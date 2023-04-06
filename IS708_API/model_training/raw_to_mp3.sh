@@ -1,5 +1,21 @@
-# covert each raw file too mp3 file 
-for i in *.raw; do ffmpeg -f s16le -ar 44100 -ac 1 -i "$i" "${i%.*}.mp3"; done
+#! /bin/bash 
 
-# move all raw file to the raw_file dir
-mkdir raw_file; mv *.raw raw_file;
+# Define the parent directory where the subfolders are located
+parent_dir=Audio;
+
+# Loop through each subfolder
+for folder in "${parent_dir}"/*; do
+    if [[ -d "${folder}" ]]; then
+        # Loop through each raw file in the subfolder
+        for raw_file in "${folder}"/*.raw; do
+            if [[ -f "${raw_file}" ]]; then
+                # Convert the raw file to mp3 using ffmpeg
+                ffmpeg -f s16le -ar 44100 -ac 1 -i "${raw_file}" "${raw_file%.*}.mp3"
+                # Remove the raw file
+                rm "${raw_file}"
+            fi
+        done
+    fi
+done;
+
+echo "Format Conversion Coversion Completed! "; 

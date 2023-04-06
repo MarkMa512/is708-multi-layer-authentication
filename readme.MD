@@ -54,6 +54,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#troubleshoot">Troubleshoot</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <!-- <li><a href="#contributing">Contributing</a></li> -->
     <!-- <li><a href="#license">License</a></li> -->
@@ -135,7 +136,37 @@ Enter your sudo password when prompted.
 ## Usage
 
 ### Model Training
-1. 
+1. Unzip the `train_data.zip` into `IS708_API/model_training` directory. Ensure that the Directory structure is as follows: 
+
+```
+  ├── IS708_API  
+  │   ├── model_training  
+  │   │   ├── Audio  
+  │   │   │   ├──1  
+  │   │   │   ├──2  
+  │   │   │   ├──3  
+  │   │   │   ├──4  
+  │   │   │   ├──5  
+  │   │   ├── Gesture  
+  │   │   │   ├──1  
+  │   │   │   ├──2  
+  │   │   │   ├──3  
+  │   │   │   ├──4  
+  │   │   │   ├──5  
+  │   │   ├── Audio Classification Notebook.ipynb  
+  │   │   ├── Gesture Classification Notebook.ipynb  
+  │   │   ├── raw_to_mp3.sh  
+```
+
+2. run `raw_to_mp3.sh` to convert the raw format audio to MP3 format for training
+
+```sh 
+./raw_to_mp3.sh
+```
+
+3. Run `Audio Classification Notebook.ipynb` and `Gesture Classification Notebook.ipynb` respectively to create the models. Upon complition, the following modeles should be created in `model_training` directory: 
+  - `audio_svm_model.pkl`
+  - `gesture_random_forest_classifier_model_relative_time.pkl`
 
 ### Launch Python Backend Server 
 
@@ -164,6 +195,14 @@ adb reverse tcp:8086 tcp:8086
 5. Record Gesture by pressing the `Record Gesture` button
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Troubleshoot
+
+1. If you have permission deny error when executing the shell script, run the following command to add exexution power to the file. 
+
+```sh
+chmod +x shell_script_name.sh
+```
 
 <!-- ROADMAP -->
 ## Roadmap
