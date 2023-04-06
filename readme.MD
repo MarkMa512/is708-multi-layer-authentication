@@ -68,6 +68,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+This project aims to demonstrate the concept of Multi-layered Aunthentication. 
+
 ### Directries
 
 - `IS708_Android`: Android Front End Application  
