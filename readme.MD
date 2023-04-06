@@ -122,7 +122,10 @@ Run `install_Linux` or `install_macOS` according to your Operating System.
 ```sh
 ./install_macOS.sh
 ```
-Kindly note that Homebrew Package Manager will be installed on macOS. 
+Kindly note that the following softwares will be installed on macOS, along side of the required dependencies, in addition to the python libraraies. 
+  - [Homebrew Package Manager](https://brew.sh)
+  - android-platform-tools
+  - [ffmpeg](https://www.ffmpeg.org)
 
 ```sh
 ./install_Linux.sh
@@ -142,7 +145,7 @@ cd IS708_API
 ```sh
 python server.py 
 ```
-Note: You may need to use python3 in case python does not work. 
+Note: You may need to use `python3` in case `python` does not work. 
 
 ### Launch Android Application
 
