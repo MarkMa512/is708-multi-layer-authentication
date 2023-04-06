@@ -120,12 +120,12 @@ Enter the `IS708_API` folder with Terminal
 ```sh
 cd IS708_API
 ```
-Run `install_Linux.sh` or `install_macOS.sh` according to your Operating System. 
+Run `install_Linux.sh` or `install_macOS.sh` according to your Operating System. Enter your sudo password when prompted. 
 
 ```sh
 ./install_macOS.sh
 ```
-Kindly note that the following softwares will be installed on macOS, along side of the required dependencies, in addition to the python libraraies. 
+Note that the following softwares will be installed on macOS (as well as the required dependencies), in addition to the python libraraies. 
   - [Homebrew Package Manager](https://brew.sh)
   - android-platform-tools
   - [ffmpeg](https://www.ffmpeg.org)
@@ -133,7 +133,6 @@ Kindly note that the following softwares will be installed on macOS, along side 
 ```sh
 ./install_Linux.sh
 ```
-Enter your sudo password when prompted. 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
@@ -166,9 +165,10 @@ Enter your sudo password when prompted.
 ./raw_to_mp3.sh
 ```
 
-3. Run `Audio Classification Notebook.ipynb` and `Gesture Classification Notebook.ipynb` respectively to create the models. Upon complition, the following modeles should be created in `model_training` directory: 
+3. Run `Audio Classification Notebook.ipynb` and `Gesture Classification Notebook.ipynb` respectively to create the models. Upon completion, the following models should be created in `model_training` directory: 
   - `audio_svm_model.pkl`
   - `gesture_random_forest_classifier_model_relative_time.pkl`
+    - This model takes around 5-10 minutes to build, depends on your machine performance. 
 
 ### Launch Python Backend Server 
 
@@ -181,7 +181,7 @@ cd IS708_API
 ```sh
 python server.py 
 ```
-Note: You may need to use `python3` in case `python` does not work. 
+Note: You may need to use `python3` instead of just `python`. 
 
 ### Launch Android Application
 
@@ -256,7 +256,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-
+[Ma Ningzhi](https://github.com/MarkMa512)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -265,7 +265,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-### Refferecnce 
+Readme Template adopted from [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+
+### Reference 
 [Connecting Android Apps to localhost, Simplified](https://dev.to/tusharsadhwani/connecting-android-apps-to-localhost-simplified-57lm)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
