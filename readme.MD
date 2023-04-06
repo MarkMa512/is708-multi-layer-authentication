@@ -1,4 +1,4 @@
-<!-- Adopted from: https://github.com/othneildrew/Best-README-Template -->
+<!-- Template Adopted from: https://github.com/othneildrew/Best-README-Template -->
 
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a name="readme-top"></a>
@@ -117,7 +117,7 @@ Enter the `IS708_API` folder with Terminal
 ```sh
 cd IS708_API
 ```
-Run `install_Linux` or `install_macOS` according to your Operating System. 
+Run `install_Linux.sh` or `install_macOS.sh` according to your Operating System. 
 
 ```sh
 ./install_macOS.sh
@@ -133,6 +133,9 @@ Kindly note that the following softwares will be installed on macOS, along side 
 Enter your sudo password when prompted. 
 <!-- USAGE EXAMPLES -->
 ## Usage
+
+### Model Training
+1. 
 
 ### Launch Python Backend Server 
 
@@ -214,5 +217,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
+
+### Refferecnce 
+[Connecting Android Apps to localhost, Simplified](https://dev.to/tusharsadhwani/connecting-android-apps-to-localhost-simplified-57lm)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
