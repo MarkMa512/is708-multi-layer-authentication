@@ -3,7 +3,6 @@ import numpy as np
 import librosa
 import joblib
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from sklearn.preprocessing import StandardScaler
 
 
 def load_models() -> object:
