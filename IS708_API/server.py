@@ -5,6 +5,7 @@ import joblib
 import pandas as pd
 import numpy as np
 import librosa
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 def load_models()->object:
     # Load the trained model

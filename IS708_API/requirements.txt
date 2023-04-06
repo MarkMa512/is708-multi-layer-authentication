@@ -3,3 +3,8 @@ pydub
 scikit-learn
 librosa
 tensorflow
+numpy
+pandas
+asyncio
+subprocess
+joblib
