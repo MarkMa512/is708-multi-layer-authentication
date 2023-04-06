@@ -206,6 +206,12 @@ adb reverse tcp:8086 tcp:8086
 chmod +x shell_script_name.sh
 ```
 
+2. As the programming of this project is done on macOS, if you have the error of `'\r': command not found` when running the script on Linux machine, perform the following command in your terminal: 
+
+```sh 
+sed -i 's/\r$//' *
+```
+
 <!-- ROADMAP -->
 ## Roadmap
 
