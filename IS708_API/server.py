@@ -9,6 +9,8 @@ async def handle_message(websocket, path):
         byte_array = bytearray(message)
 
         # Process the received input here.
+
+        
         # Response will be the class ID of the predicted subject. I have hardcoded here. However, you can replace the response variable with your model output accordingly.
         response = "1"
         # Encode the string as bytes and send it back to the client
