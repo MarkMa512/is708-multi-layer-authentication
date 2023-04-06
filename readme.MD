@@ -131,6 +131,31 @@ Enter your sudo password when prompted.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+### Launch Python Backend Server 
+
+1. Enter the `IS708_API` folder with Terminal
+```sh
+cd IS708_API
+```
+
+2. Run the `server.py`
+```sh
+python server.py 
+```
+Note: You may need to use python3 in case python does not work. 
+
+### Launch Android Application
+
+1. Open Andorid Studio installed on your machine, open the project under `IS708_Android`. 
+2. Connect your testing phone, ensure that the developing option and debugging mode is on. 
+3. Enable the access to the server running on localhost: 
+
+```sh 
+adb reverse tcp:8086 tcp:8086
+```
+
+4. Record Audio by pressing the `Record Audio` button 
+5. Record Gesture by pressing the `Record Gesture` button
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -138,8 +163,8 @@ Enter your sudo password when prompted.
 ## Roadmap
 
 - [ ] (C1) Building the base Android Application for recording and saving IMU and audio data.
-- [ ] (C2) Building a Speaker recognition model (Python code on server)
-- [ ] (C3) Building an IMU gesture pattern recognition model (Python code on server)
+- [x] (C2) Building a Speaker recognition model (Python code on server)
+- [x] (C3) Building an IMU gesture pattern recognition model (Python code on server)
 - [ ] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
 - [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)
 - [ ] (C6) Building the unified multi-modal recognition model. (Single model with both inputs instead of 2 separate models. Needs to be implemented on python server offline)
