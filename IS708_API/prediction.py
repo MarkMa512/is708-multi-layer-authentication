@@ -3,6 +3,11 @@ import numpy as np
 import librosa
 import joblib
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import logging
+
+# set up logging
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
 def load_models() -> object:
@@ -10,6 +15,7 @@ def load_models() -> object:
     audio_model = joblib.load('model_training/audio_svm_model.pkl')
     gesture_model = joblib.load(
         'model_training/gesture_random_forest_classifier_model_relative_time.pkl')
+    logging.info("audio and gesture models are loaded!")
     return audio_model, gesture_model
 
 
@@ -51,19 +57,19 @@ def combine_predict(audio_result: int, gesture_result: object) -> int:
 """
 Testing
 """
+if __name__ == "__main__":
+    audio_model, gesture_model = load_models()
 
-audio_model, gesture_model = load_models()
+    csv_file_path = "model_training/Gesture/4/1677727897634.csv"
 
-csv_file_path = "model_training/Gesture/4/1677727897634.csv"
+    new_audio_path = "model_training/Audio/1/1677661942148.mp3"
 
-new_audio_path = "model_training/Audio/1/1677661942148.mp3"
+    audio_result = predict_new_audio(new_audio_path, audio_model)
 
-audio_result = predict_new_audio(new_audio_path, audio_model)
+    gesture_result = predict_new_gesture(csv_file_path, gesture_model)
 
-gesture_result = predict_new_gesture(csv_file_path, gesture_model)
+    combine_prediction = combine_predict(audio_result, gesture_result)
 
-combine_prediction = combine_predict(audio_result, gesture_result)
-
-print(audio_result)
-print(gesture_result)
-print(combine_prediction)
+    print(audio_result)
+    print(gesture_result)
+    print(combine_prediction)
