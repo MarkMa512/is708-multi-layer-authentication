@@ -70,12 +70,12 @@
 
 This project aims to demonstrate the concept of Multi-layered Aunthentication. 
 
-### Directries
+### Directories
 
 - `IS708_Android`: Android Front End Application  
 
 - `IS708_API`: Python Backend Server  
-  - `model_training`: Training data and Jupyter Note Booking for the Classification Model Building 
+  - `model_training`: Training data and Jupyter Note Booking for the Classification Model Building
 
 - `media`: Photos and Screenshots  
 
@@ -116,11 +116,16 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication.
 
 ### Installation
 
-Enter the `IS708_API` folder with Terminal
+1. Clone the repository
+```sh
+git-clone https://github.com/MarkMa512/is708-multi-layer-authentication.git
+```
+
+2. Enter the `IS708_API` folder with Terminal
 ```sh
 cd IS708_API
 ```
-Run `install_Linux.sh` or `install_macOS.sh` according to your Operating System. Enter your sudo password when prompted. 
+3. Run `install_Linux.sh` or `install_macOS.sh` according to your Operating System. Enter your sudo password when prompted. 
 
 ```sh
 ./install_macOS.sh
@@ -174,6 +179,9 @@ Note that the following softwares will be installed on macOS (as well as the req
   - `gesture_random_forest_classifier_model_relative_time.pkl`
     - This model takes around 5-10 minutes to build, depends on your machine performance. 
 
+### Pre-trained model 
+The pretrained models can be download from [here](). Download them into `IS708_API/model_training` directory. 
+
 ### Launch Python Backend Server 
 
 1. Enter the `IS708_API` folder with Terminal
@@ -181,7 +189,12 @@ Note that the following softwares will be installed on macOS (as well as the req
 cd IS708_API
 ```
 
-2. Run the `server.py`
+2. Run `create_out_dir.sh` to create the output folder structure
+```sh 
+./create_out_dir.sh
+```
+
+3. Run the `server.py`
 ```sh
 python server.py 
 ```
@@ -222,7 +235,7 @@ sed -i 's/\r$//' *
 - [ ] (C1) Building the base Android Application for recording and saving IMU and audio data.
 - [x] (C2) Building a Speaker recognition model (Python code on server)
 - [x] (C3) Building an IMU gesture pattern recognition model (Python code on server)
-- [ ] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
+- [x] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
 - [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)
 - [ ] (C6) Building the unified multi-modal recognition model. (Single model with both inputs instead of 2 separate models. Needs to be implemented on python server offline)
 
