@@ -24,7 +24,7 @@ def convertRawAudio(filePath, outputPath='output.mp3'):
 
 async def main():
     # Start the WebSocket server on port 8765
-    convertRawAudio('data/sample.raw')
+    # convertRawAudio('data/sample.raw')
     async with websockets.serve(handle_message, "localhost", 8086):
         await asyncio.Future()  # Run forever
 

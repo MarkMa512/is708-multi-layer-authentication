@@ -18,9 +18,9 @@
     <!-- <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
   </a>
 
-  <h3 align="center">IS708 Mobile and Distributed System</h3>
+  <h3 align="center">Multi-layer Authentication System</h3>
 
-  <p align="center">Programming Assignment
+  <p align="center">IS708 Mobile and Distributed System Programming Assignment
     <br />
     <a href="https://github.com/MarkMa512/is708-multi-layer-authentication"><strong>Explore the docs »</strong></a>
     <br />
@@ -109,7 +109,7 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication.
         ```sh 
         python -m ensurepip --upgrade
         ```
-    - Windows(Install using CMD):
+    - Windows (Install using CMD):
         ```cmd
         py -m ensurepip --upgrade
         ```
@@ -143,17 +143,21 @@ Note that the following softwares will be installed on macOS (as well as the req
   ├── IS708_API  
   │   ├── model_training  
   │   │   ├── Audio  
-  │   │   │   ├──1  
-  │   │   │   ├──2  
-  │   │   │   ├──3  
-  │   │   │   ├──4  
-  │   │   │   ├──5  
+  │   │   │   ├── 1  
+  │   │   │   │   ├── xxxx.raw 
+  │   │   │   │   ├── ... 
+  │   │   │   ├── 2  
+  │   │   │   ├── 3  
+  │   │   │   ├── 4  
+  │   │   │   ├── 5  
   │   │   ├── Gesture  
-  │   │   │   ├──1  
-  │   │   │   ├──2  
-  │   │   │   ├──3  
-  │   │   │   ├──4  
-  │   │   │   ├──5  
+  │   │   │   ├── 1  
+  │   │   │   │   ├── xxxx.csv
+  │   │   │   │   ├── ...
+  │   │   │   ├── 2  
+  │   │   │   ├── 3  
+  │   │   │   ├── 4  
+  │   │   │   ├── 5  
   │   │   ├── Audio Classification Notebook.ipynb  
   │   │   ├── Gesture Classification Notebook.ipynb  
   │   │   ├── raw_to_mp3.sh  
