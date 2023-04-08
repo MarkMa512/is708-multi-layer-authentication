@@ -30,6 +30,8 @@ while True:
     try:
         response = ws.recv()
         logging.info(f"Received response: {response}")
+        if response == b'3':
+            logging.info("========== Server Setup Success! ==========")
     except websocket.WebSocketConnectionClosedException:
         logging.warning("WebSocket connection closed.")
         break

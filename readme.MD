@@ -200,6 +200,25 @@ python server.py
 ```
 Note: You may need to use `python3` instead of just `python`. 
 
+4. to test your server setup, run `test_client.py`: 
+
+```sh 
+python test_client.py
+```
+The following output should be displayed: 
+
+> yyyy-mm-dd hh:mm:14,240 - INFO - Connected to server.  
+> yyyy-mm-dd hh:mm:14,241 - INFO - Sent 257544 bytes of audio data to the server.  
+> yyyy-mm-dd hh:mm:14,242 - INFO - Sent 223684 bytes of gesture data to the server.  
+> yyyy-mm-dd hh:mm:18,475 - INFO - Received response: b'3'  
+> yyyy-mm-dd hh:mm:18,475 - INFO - ========== Server Setup Success! ==========  
+
+5. To clear the `out` folder after testing, run `clear_out_folder.sh`: 
+
+```sh
+./clear_out_folder.sh
+```
+
 ### Launch Android Application
 
 1. Open Andorid Studio installed on your machine, open the project under `IS708_Android`. 

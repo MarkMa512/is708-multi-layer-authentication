@@ -12,6 +12,7 @@ logging.basicConfig(
 
 def load_models() -> object:
     # Load the trained model
+    logging.info("loading audio and gesture models... Please wait.")
     audio_model = joblib.load('model_training/audio_svm_model.pkl')
     gesture_model = joblib.load(
         'model_training/gesture_random_forest_classifier_model_relative_time.pkl')

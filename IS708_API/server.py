@@ -10,7 +10,6 @@ logging.basicConfig(
 
 # load models
 audio_model, gesture_model = load_models()
-logging.info("audio_model, gesture_model are loaded")
 
 output_audio_path = "out/Audio/output"
 output_gesture_path = "out/Gesture/output.csv"
@@ -31,13 +30,13 @@ async def handle_message(websocket, path):
             # 2. convert raw audio file to mp3 using convertRawAudio()
             convertRawAudio(filePath=filename,
                             outputPath=f'{output_audio_path}.mp3')
-            logging.info("audio data recieved, saved and coverted")
+            logging.info("Audio data recieved, saved and coverted")
         else:
             # save the csv file to folder 'out/Gesture/output.csv'
             filename = output_gesture_path
             with open(filename, "wb") as f:
                 f.write(message)
-            logging.info("gesture data recieved,saved")
+            logging.info("Gesture data recieved,saved")
 
             """
             csv file is always sent later than audio file, so prediction will only be carried out once the csv file is in. 
@@ -52,6 +51,8 @@ async def handle_message(websocket, path):
 
             # Encode the string as bytes and send it back to the client
             await websocket.send(response.encode())
+            logging.info(
+                f'Prediction result of :"{response}" has been stent to the client.')
 
 
 def convertRawAudio(filePath, outputPath='out/Audio/output.mp3'):
