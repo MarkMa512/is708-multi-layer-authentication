@@ -166,6 +166,7 @@ Note that the following softwares will be installed on macOS (as well as the req
   │   │   ├── Audio Classification Notebook.ipynb  
   │   │   ├── Gesture Classification Notebook.ipynb  
   │   │   ├── raw_to_mp3.sh  
+  │   │   ├── sample.raw  
 ```
 
 2. run `raw_to_mp3.sh` to convert the raw format audio to MP3 format for training
@@ -205,7 +206,7 @@ Note: You may need to use `python3` instead of just `python`.
 ```sh 
 python test_client.py
 ```
-The following output should be displayed: 
+Do ensure that `sample.raw` is in folder `IS708_API/model_training`. The following output should be displayed: 
 
 > yyyy-mm-dd hh:mm:14,240 - INFO - Connected to server.  
 > yyyy-mm-dd hh:mm:14,241 - INFO - Sent 257544 bytes of audio data to the server.  
@@ -250,12 +251,13 @@ sed -i 's/\r$//' *
 
 <!-- ROADMAP -->
 ## Roadmap
-
+Undergraduate / Master Student: 
 - [ ] (C1) Building the base Android Application for recording and saving IMU and audio data.
 - [x] (C2) Building a Speaker recognition model (Python code on server)
 - [x] (C3) Building an IMU gesture pattern recognition model (Python code on server)
 - [x] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
 - [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)
+PHD Student: 
 - [ ] (C6) Building the unified multi-modal recognition model. (Single model with both inputs instead of 2 separate models. Needs to be implemented on python server offline)
 
 See the [open issues](https://github.com/MarkMa512/is708-multi-layer-authentication/issues) for a full list of proposed features (and known issues).
