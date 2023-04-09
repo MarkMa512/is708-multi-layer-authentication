@@ -256,8 +256,9 @@ Undergraduate / Master Student:
 - [x] (C2) Building a Speaker recognition model (Python code on server)
 - [x] (C3) Building an IMU gesture pattern recognition model (Python code on server)
 - [x] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
-- [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)
-PHD Student: 
+- [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)  
+
+PHD Student:  
 - [ ] (C6) Building the unified multi-modal recognition model. (Single model with both inputs instead of 2 separate models. Needs to be implemented on python server offline)
 
 See the [open issues](https://github.com/MarkMa512/is708-multi-layer-authentication/issues) for a full list of proposed features (and known issues).
