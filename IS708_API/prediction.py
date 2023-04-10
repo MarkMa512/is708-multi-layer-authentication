@@ -28,8 +28,6 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> object:
         lambda x: (x - df['Timestamp'][0]))
     df = df.drop(["Timestamp"], axis=1)  # Drop "Timestamp" columns as features
     result_list = clf.predict(df)
-    # counts = np.bincount(result_list)
-    # result = np.argmax(counts)
     return result_list
 
 
