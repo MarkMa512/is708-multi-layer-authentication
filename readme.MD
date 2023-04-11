@@ -251,6 +251,26 @@ chmod +x shell_script_name.sh
 sed -i 's/\r$//' *
 ```
 
+3. If you encountered the following error while trying to install the relevant package via pip: 
+
+> ERROR: Could not find a version that satisfies the requirement subprocess (from versions: none)
+> ERROR: No matching distribution found for subprocess
+
+Try upgrading your pip to the latest version: 
+
+```sh
+python -m pip install --upgrade pip
+```
+
+4. If you encounter error of `The kernel appears to have died. It will restart automatically.` while running the `Audio Classification Notebook.ipynb` , this is likely due to that `tensorflow` package was not installed correctly. Or it could be that you are using a Apple Silicon Mac.
+
+```sh
+pip uninstall tensorflow
+```
+```sh
+pip install tensorflow 
+```
+
 <!-- ROADMAP -->
 ## Roadmap
 Undergraduate / Master Student: 
