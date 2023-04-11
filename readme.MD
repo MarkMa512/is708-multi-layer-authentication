@@ -68,7 +68,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project aims to demonstrate the concept of Multi-layered Aunthentication. 
+This project aims to demonstrate the concept of Multi-layered Aunthentication. The user will record a 3 second Audio and moves his phone along a unique pattern in a 3-second window, both data will be transferred to the backend server, which runs machine learning model to determine if the user is one to the user to be authenticated. 
+
+**Note: This repositpry is Private on github until the course is over. Thank you.**
 
 ### Directories
 
