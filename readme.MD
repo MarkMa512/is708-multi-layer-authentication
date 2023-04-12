@@ -68,9 +68,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project aims to demonstrate the concept of Multi-layered Aunthentication. The user will record a 3 second Audio and moves his phone along a unique pattern in a 3-second window, both data will be transferred to the backend server, which runs machine learning model to determine if the user is one to the user to be authenticated. 
+This project aims to demonstrate the concept of Multi-layered Aunthentication. The user will record a 3 second audio and moves his phone along a unique pattern in a 3-second window, both Audio and Inertial Measurement Unit (IMU) data will be transferred to the backend server, which runs machine learning model to determine if the user is one of the user to be authenticated. 
 
-**Note: This repositpry is Private on github until the course is over. Thank you.**
+**Notice: This repositpry is Private on github until the course is over. Thank you.**
 
 ### Directories
 
@@ -79,7 +79,7 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication. T
 - `IS708_API`: Python Backend Server  
   - `model_training`: Training data and Jupyter Note Booking for the Classification Model Building
 
-- `media`: Photos and Screenshots  
+- `media_and_doc`: Photos and Screenshots of the project, together with the design document. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -201,9 +201,9 @@ cd IS708_API
 ```sh
 python server.py 
 ```
-Note: You may need to use `python3` instead of just `python`. 
+Note: You may need to use `python3` instead of just `python`, depending on your machine setup. 
 
-4. to test your server setup, run `test_client.py`: 
+4. To test your server setup, run `test_client.py`: 
 
 ```sh 
 python test_client.py
@@ -262,7 +262,7 @@ Try upgrading your pip to the latest version:
 python -m pip install --upgrade pip
 ```
 
-4. If you encounter error of `The kernel appears to have died. It will restart automatically.` while running the `Audio Classification Notebook.ipynb` , this is likely due to that `tensorflow` package was not installed correctly. Or it could be that you are using a Apple Silicon Mac.
+4. If you encounter error of `The kernel appears to have died. It will restart automatically.` while running the `Audio Classification Notebook.ipynb`, this is likely due to that `tensorflow` package was not installed correctly. Or it could be that you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
 
 ```sh
 pip uninstall tensorflow
