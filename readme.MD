@@ -183,7 +183,7 @@ Note that the following softwares will be installed on macOS (as well as the req
     - This model takes around 5-10 minutes to build, depends on your machine performance. 
 
 ### Pre-trained model 
-The pretrained models can be download from [here](). Download them into `IS708_API/model_training` directory. 
+The pretrained models can be download from [here](https://drive.google.com/drive/folders/1EjJP8h2Ok38Dce6bwFOSEdQEYkxRHTn7?usp=sharing). **SMU Gmail Login is required**. Download them into `IS708_API/model_training` directory. 
 
 ### Launch Python Backend Server 
 
