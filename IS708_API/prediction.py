@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import librosa
 import joblib
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+# from tensorflow.keras.preprocessing.sequence import pad_sequences
 import logging
 
 # set up logging
@@ -37,8 +37,15 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
     mfcc_new = librosa.feature.mfcc(y=signal_new, sr=sr_new, n_mfcc=n_mfcc)
     mfcc_flattened = mfcc_new.T.flatten().tolist()
     input_list.append(mfcc_flattened)
-    input_list = pad_sequences(
-        input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
+
+    """ padding using tensor flow"""
+    # input_list = pad_sequences(
+    #     input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
+
+    """padding for test with apple silicon"""
+    input_list = input_list[:2500]
+
+    
     y_pred = svm.predict(input_list)
     return y_pred[0]
 

@@ -50,9 +50,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // request for audio recording permission
+        requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, 1);
     }
     private void startRecordingAudio(){
-        recordButton.setText("Stop Recording");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recordButton.setText("Stop Recording");
+            }
+        });
         isRecording = true;
 
        timer = new Timer();
@@ -89,7 +97,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void stopRecordingAudio(){
         // change button text and reset isRecording flag
-        recordButton.setText("Record Audio");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recordButton.setText("Record Audio");
+            }
+        });
+
         isRecording = false;
         // Stop recording and release MediaRecorder
         mediaRecorder.stop();
@@ -103,14 +117,17 @@ public class MainActivity extends AppCompatActivity {
         * */
         try {
             byte[] audioArrayByte = convertAudioToByteArray(audioFile);
-            sendDataOverWebSocket(audioArrayByte, "localhost:8086");
+            sendDataOverWebSocket(audioArrayByte, "ws:10.0.2.2:8086");
         }catch (IOException e){
             e.printStackTrace();
         }catch (URISyntaxException e){
             e.printStackTrace();
         }
-        Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
 
+//        Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
+        /**
+         * java.lang.NullPointerException: Can't toast on a thread that has not called Looper.prepare()
+         */
     }
 
     private byte[] convertAudioToByteArray(File audioFile) throws IOException {

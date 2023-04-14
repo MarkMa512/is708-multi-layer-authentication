@@ -261,7 +261,7 @@ Try upgrading your pip to the latest version:
 python -m pip install --upgrade pip
 ```
 
-4. If you encounter error of `The kernel appears to have died. It will restart automatically.` while running the `Audio Classification Notebook.ipynb`, this is likely due to that `tensorflow` package was not installed correctly. Or it could be that you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
+4. If you encounter the error of `The kernel appears to have died. It will restart automatically.` while running the `Audio Classification Notebook.ipynb`, this is likely due to that `tensorflow` package was not installed correctly. Or it could be that you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
 
 ```sh
 pip uninstall tensorflow
@@ -269,6 +269,7 @@ pip uninstall tensorflow
 ```sh
 pip install tensorflow 
 ```
+5. if you encounter the error of `illegal hardware instruction` after running `python server.py `, this is becuase you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
 
 <!-- ROADMAP -->
 ## Roadmap
