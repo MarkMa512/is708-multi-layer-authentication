@@ -11,6 +11,7 @@ logging.basicConfig(
 # load models
 audio_model, gesture_model = load_models()
 
+# output directories for the audio and csv file recieved from the client
 output_audio_path = "out/Audio/output"
 output_gesture_path = "out/Gesture/output.csv"
 
@@ -32,24 +33,24 @@ async def handle_message(websocket, path):
                             outputPath=f'{output_audio_path}.mp3')
             logging.info("Audio data recieved, saved and coverted")
         else:
-            # save the csv file to folder 'out/Gesture/output.csv'
+            # 1. save the csv file to folder 'out/Gesture/output.csv'
             filename = output_gesture_path
             with open(filename, "wb") as f:
                 f.write(message)
             logging.info("Gesture data recieved,saved")
-
             """
             csv file is always sent later than audio file, so prediction will only be carried out once the csv file is in. 
             """
-            # Response will be the class ID of the predicted subject. I have hardcoded here. However, you can replace the response variable with your model output accordingly.
+            # 2. predict based on audio data
             audio_result = predict_new_audio(
                 f"{output_audio_path}.mp3", audio_model)
+            # 3. predict based on gesture data
             gesture_result = predict_new_gesture(
                 output_gesture_path, gesture_model)
+            # 4. combine result from both predictions
             combine_prediction = combine_predict(audio_result, gesture_result)
+            # 5. encode the string as bytes and send it back to the client
             response = str(combine_prediction)
-
-            # Encode the string as bytes and send it back to the client
             await websocket.send(response.encode())
             logging.info(
                 f'Prediction result of :"{response}" has been stent to the client.')

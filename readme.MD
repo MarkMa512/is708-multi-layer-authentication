@@ -68,7 +68,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project aims to demonstrate the concept of Multi-layered Aunthentication. The user will record a 3 second audio and moves his phone along a unique pattern in a 3-second window, both Audio and Inertial Measurement Unit (IMU) data will be transferred to the backend server, which runs machine learning model to determine if the user is one of the user to be authenticated. 
+This project aims to demonstrate the concept of Multi-layered Aunthentication. 
+- The user will record a 3 second audio and moves his phone along a unique pattern in a 3-second window. 
+- Both Audio and Inertial Measurement Unit (IMU) data will be recorded by the Android Application and transferred to the backend server. 
+- The backend server runs machine learning model to determine if the user is one of the user to be authenticated. 
 
 **Notice: This repositpry is Private on github until the course is over. Thank you.**
 
@@ -105,15 +108,11 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication. T
 ### Prerequisites
 
 1. Ensure [Android Studio](https://developer.android.com/studio) is installed. 
-2. Ensure [Python 3.9](https://www.python.org/downloads/release/python-3912/) or later is installed
+2. Ensure [Python 3.9.12](https://www.python.org/downloads/release/python-3912/) or later is installed
     - Ensure [pip](https://pip.pypa.io/en/stable/installation/) is installed. 
     - Linux and macOS (Install using Terminal):  
         ```sh 
         python -m ensurepip --upgrade
-        ```
-    - Windows (Install using CMD):
-        ```cmd
-        py -m ensurepip --upgrade
         ```
 
 ### Installation
@@ -171,7 +170,7 @@ Note that the following softwares will be installed on macOS (as well as the req
   │   │   ├── sample.raw  
 ```
 
-2. run `raw_to_mp3.sh` to convert the raw format audio to MP3 format for training
+2. run `raw_to_mp3.sh` to convert the raw format audio to MP3 format for model training
 
 ```sh 
 ./raw_to_mp3.sh
@@ -183,7 +182,7 @@ Note that the following softwares will be installed on macOS (as well as the req
     - This model takes around 5-10 minutes to build, depends on your machine performance. 
 
 ### Pre-trained model 
-The pretrained models can be download from [here](https://drive.google.com/drive/folders/1EjJP8h2Ok38Dce6bwFOSEdQEYkxRHTn7?usp=sharing). **SMU Gmail Login is required**. Download them into `IS708_API/model_training` directory. 
+The pretrained models can be download from [here](https://drive.google.com/drive/folders/1EjJP8h2Ok38Dce6bwFOSEdQEYkxRHTn7?usp=sharing). **SMU Google Acount Login is required**. Put the 2 models into `IS708_API/model_training` directory. 
 
 ### Launch Python Backend Server 
 
