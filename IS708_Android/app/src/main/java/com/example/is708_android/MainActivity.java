@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         // request for audio recording permission
         requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, 1);
+        // request for file write permission
+        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
     }
     private void startRecordingAudio(){
         runOnUiThread(new Runnable() {
@@ -80,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // start recording Audio
-        // to-do: setAudioSource failed. Seems to be a permission issue.
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(audioFile.getAbsolutePath());
@@ -115,14 +116,14 @@ public class MainActivity extends AppCompatActivity {
         /*
         * Send audio file over webserver
         * */
-        try {
-            byte[] audioArrayByte = convertAudioToByteArray(audioFile);
-            sendDataOverWebSocket(audioArrayByte, "ws:10.0.2.2:8086");
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (URISyntaxException e){
-            e.printStackTrace();
-        }
+//        try {
+//            byte[] audioArrayByte = convertAudioToByteArray(audioFile);
+//            sendDataOverWebSocket(audioArrayByte, "ws:localhost:8086");
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }catch (URISyntaxException e){
+//            e.printStackTrace();
+//        }
 
 //        Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
         /**
