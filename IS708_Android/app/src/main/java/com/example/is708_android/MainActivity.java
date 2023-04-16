@@ -1,14 +1,17 @@
 package com.example.is708_android;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -18,7 +21,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button recordAudioButton;
     private boolean isRecording = false;
     private Timer timer;
-    private WebSocketClient webSocketClient;
     private File audioFile;
 
     private static final int SAMPLE_RATE = 44100;
@@ -67,27 +68,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor gyroscope;
     private boolean isRecordingGesture = false;
 
-    private List<String> gestureData = Collections.synchronizedList(new ArrayList<>());
+    private final List<String> gestureData = Collections.synchronizedList(new ArrayList<>());
     private static final long RECORDING_DURATION_MS = 3000;
     private static final long SAMPLING_INTERVAL_MS = 1;
 
     // Variables for sending data over websocket
-    private String serverUrl = "ws://10.0.2.2:8086";
+    private final String SERVER_URL = "ws://10.0.2.2:8086";
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Initialize the record audio button
         recordAudioButton = findViewById(R.id.capture_audio_button);
-        recordAudioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isRecording) {
-                    startRecordingAudio();
-                } else {
-                    stopRecordingAudio();
-                }
+        recordAudioButton.setOnClickListener(view -> {
+            if (!isRecording) {
+                startRecordingAudio();
+            } else {
+                stopRecordingAudio();
             }
         });
 
@@ -98,14 +97,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Initialize the record gesture button
         recordGestureButton = findViewById(R.id.capture_gesture_button);
-        recordGestureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isRecordingGesture) {
-                    startRecordingGesture();
-                } else {
-                    stopRecordingGesture();
-                }
+        recordGestureButton.setOnClickListener(view -> {
+            if (!isRecordingGesture) {
+                startRecordingGesture();
+            } else {
+                stopRecordingGesture();
             }
         });
 
@@ -120,19 +116,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         requestPermissions(new String[]{android.Manifest.permission.HIGH_SAMPLING_RATE_SENSORS}, 1);
     }
 
+    @SuppressLint("SetTextI18n")
     private void startRecordingAudio() {
         runOnUiThread(() -> recordAudioButton.setText("Stop Recording"));
         isRecording = true;
 
         bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            Log.e("MainActivity", "Audio recording permission not granted");
             return;
         }
 
@@ -174,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }, 3000);
     }
 
+    @SuppressLint("SetTextI18n")
     private void stopRecordingAudio() {
         // Change button text and reset isRecording flag
         runOnUiThread(() -> recordAudioButton.setText("Record Audio"));
@@ -198,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Cancel the timer
         timer.cancel();
 
-        runOnUiThread(() -> Toast.makeText(this, "Audio Recording Stopped", Toast.LENGTH_SHORT).show());
+        runOnUiThread(() -> Toast.makeText(this, "Audio Recording Stopped. Data saved to 'Download'.", Toast.LENGTH_SHORT).show());
 
         /*
          * Send audio file over webserver
@@ -206,22 +198,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         try {
             byte[] audioArrayByte = convertFileToByteArray(audioFile);
-            sendDataOverWebSocket(audioArrayByte, serverUrl);
+            sendDataOverWebSocket(audioArrayByte, SERVER_URL);
         }catch (IOException | URISyntaxException e){
             e.printStackTrace();
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void startRecordingGesture() {
 
         gestureData.clear();
         isRecordingGesture = true;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                recordGestureButton.setText("Stop Gesture Recording");
-                Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
-            }
+        runOnUiThread(() -> {
+            recordGestureButton.setText("Stop Gesture Recording");
+            Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
         });
 
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
@@ -236,14 +226,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }, RECORDING_DURATION_MS);
     }
 
+    @SuppressLint("SetTextI18n")
     private void stopRecordingGesture() {
         isRecordingGesture = false;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                recordGestureButton.setText("Record Gesture");
-                Toast.makeText(MainActivity.this, "Gesture Recording Stopped. Data saved", Toast.LENGTH_SHORT).show();
-            }
+        runOnUiThread(() -> {
+            recordGestureButton.setText("Record Gesture");
+            Toast.makeText(MainActivity.this, "Gesture Recording Stopped. Data saved to 'Download'.", Toast.LENGTH_SHORT).show();
         });
         sensorManager.unregisterListener(this, accelerometer);
         sensorManager.unregisterListener(this, gyroscope);
@@ -257,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         try {
             File gestureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "gesture.csv");
             byte[] gestureArrayByte = convertFileToByteArray(gestureFile);
-            sendDataOverWebSocket(gestureArrayByte, serverUrl);
+            sendDataOverWebSocket(gestureArrayByte, SERVER_URL);
         }catch (IOException | URISyntaxException e){
             e.printStackTrace();
         }
@@ -314,14 +302,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private byte[] convertFileToByteArray(File audioFile) throws IOException {
-        // Create input stream from audio file
+        // Create input stream from a file
         FileInputStream inputStream = new FileInputStream(audioFile);
 
-        // Create byte array to store audio data
+        // Create byte array to store the data
         byte[] byteArray = new byte[(int) audioFile.length()];
 
         // Read audio data into byte array
-        inputStream.read(byteArray);
+        int bytesRead = inputStream.read(byteArray);
+
+        if (bytesRead != byteArray.length) {
+            Log.e("MainActivity", "Failed to read the entire audio file");
+        }
 
         // Close input stream
         inputStream.close();
@@ -353,12 +345,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     overallMessage = message;
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, overallMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, overallMessage, Toast.LENGTH_SHORT).show());
             }
 
             @Override

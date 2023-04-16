@@ -29,6 +29,15 @@ async def handle_message(websocket, path):
 
         # check the 1st to 4th element, if the input is not a csv file (with content 'Time')
         if (byte_array[0:4] != b'Time'):
+            # 0. check if the audio file is already in the folder
+            try:
+                with open(f"{output_audio_path}.mp3", "rb") as f:
+                    # remove the audio file if it already exists
+                    subprocess.run(['rm', f'{output_audio_path}.mp3'])
+                    subprocess.run(['rm', f'{output_audio_path}.raw'])
+                    logging.info("Audio file already exists, deleted.")
+            except FileNotFoundError:
+                pass
             # 1. save the raw audio file as 'out/Audio/output.raw'
             filename = f"{output_audio_path}.raw"
             with open(filename, "wb") as f:
@@ -38,7 +47,7 @@ async def handle_message(websocket, path):
                             outputPath=f'{output_audio_path}.mp3')
             logging.info("Audio data recieved, saved and coverted")
         else:
-            # check if the audio file is already in the folder
+            # 0. check if the audio file is already in the folder
             # if not, prompt the user to record audio first. 
             try:
                 with open(f"{output_audio_path}.mp3", "rb") as f:
