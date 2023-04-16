@@ -132,7 +132,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Create the audio file
         try {
             audioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "audio.raw");
-            audioFile.createNewFile();
+            boolean audioFileCreation = audioFile.createNewFile();
+            if (!audioFileCreation) {
+                Log.i("MainActivity", "Audio file creation failed. This may be because the file already exists and it will be overwritten.");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
