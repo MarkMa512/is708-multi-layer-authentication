@@ -43,7 +43,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
-        <li><a href="#directries">Directries</a></li>
+        <li><a href="#directories">Directries</a></li>
       </ul>
     </li>
     <li>
@@ -74,6 +74,10 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication.
 - The backend server runs machine learning model to determine if the user is one of the user to be authenticated. 
 
 **Notice: This repositpry is Private on github until the course is over. Thank you.**
+
+### Quick Demo
+
+
 
 ### Directories
 
@@ -191,18 +195,13 @@ The pretrained models can be download from [here](https://drive.google.com/drive
 cd IS708_API
 ```
 
-2. Run `create_out_dir.sh` to create the output folder structure
-```sh 
-./create_out_dir.sh
-```
-
-3. Run the `server.py`
+2. Run the `server.py`
 ```sh
 python server.py 
 ```
 Note: You may need to use `python3` instead of just `python`, depending on your machine setup. 
 
-4. To test your server setup, run `test_client.py`: 
+3. To test your server setup, run `test_client.py`: 
 
 ```sh 
 python test_client.py
@@ -213,26 +212,16 @@ Do ensure that `sample.raw` is in folder `IS708_API/model_training`. The followi
 > yyyy-mm-dd hh:mm:14,241 - INFO - Sent 257544 bytes of audio data to the server.  
 > yyyy-mm-dd hh:mm:14,242 - INFO - Sent 223684 bytes of gesture data to the server.  
 > yyyy-mm-dd hh:mm:18,475 - INFO - Received response: b'3'  
-> yyyy-mm-dd hh:mm:18,475 - INFO - ========== Server Setup Success! ==========  
-
-5. To clear the `out` folder after testing, run `clear_out_folder.sh`: 
-
-```sh
-./clear_out_folder.sh
-```
+> yyyy-mm-dd hh:mm:18,475 - INFO - ========== Server Setup Success! ========== 
 
 ### Launch Android Application
 
 1. Open Andorid Studio installed on your machine, open the project under `IS708_Android`. 
-2. Connect your testing phone, ensure that the developing option and debugging mode is on. 
+2. Create a emulaor 
 3. Enable the access to the server running on localhost: 
-
-```sh 
-adb reverse tcp:8086 tcp:8086
-```
-
 4. Record Audio by pressing the `Record Audio` button 
 5. Record Gesture by pressing the `Record Gesture` button
+6. Prediction result will be shown as a Toast Message. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -271,18 +260,15 @@ pip install tensorflow
 ```
 5. if you encounter the error of `illegal hardware instruction` after running `python server.py `, this is becuase you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
 
-6. 
-
-`FileNotFoundError: [Errno 2] No such file or directory: 'out/Audio/output.raw'` 
 
 <!-- ROADMAP -->
 ## Roadmap
 Undergraduate / Master Student: 
-- [ ] (C1) Building the base Android Application for recording and saving IMU and audio data.
+- [x] (C1) Building the base Android Application for recording and saving IMU and audio data.
 - [x] (C2) Building a Speaker recognition model (Python code on server)
 - [x] (C3) Building an IMU gesture pattern recognition model (Python code on server)
 - [x] (C4) Combine the prediction results from the two models (Return the user ID with maximum joint class probability from C2 and C3)
-- [ ] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)  
+- [x] (C5) Complete integration of the app with the authentication result shown as a Toast message. (Send recorded input to python backend, retrieve the prediction result, compare the predicted user ID to the owner ID for authentication)  
 
 PHD Student:  
 - [ ] (C6) Building the unified multi-modal recognition model. (Single model with both inputs instead of 2 separate models. Needs to be implemented on python server offline)
