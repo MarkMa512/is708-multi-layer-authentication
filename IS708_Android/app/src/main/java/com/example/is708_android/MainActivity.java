@@ -343,10 +343,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onMessage(String message) {
                 Log.i("WebSocket", "Received message: " + message);
+                String overallMessage;
+
+                // if the message is of length 1, it is one of the user id (1,2,3,4,5)
+                if (message.length() == 1){
+                    overallMessage = "User " + message + " has been authenticated";
+                }else{
+                    // else it is the error message
+                    overallMessage = message;
+                }
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, overallMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -368,22 +378,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         try {
             // Wait for the connection to be established
-            if (!connectionLatch.await(10, TimeUnit.SECONDS)) {
+            if (!connectionLatch.await(20, TimeUnit.SECONDS)) {
                 Log.e("WebSocket", "WebSocket connection timeout");
                 webSocketClient.close();
                 return;
             }
 
-            // Send the CSV data as a byte array over the WebSocket connection
+            // Send the data as a byte array over the WebSocket connection
             webSocketClient.send(byteArray);
             Log.i("WebSocket", "Sent byteArray of length: " + byteArray.length);
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        // Close the WebSocket connection
-        //webSocketClient.close();
     }
 
 }

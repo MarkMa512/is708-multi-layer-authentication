@@ -11,6 +11,10 @@ logging.basicConfig(
 # load models
 audio_model, gesture_model = load_models()
 
+# check if output folder exists, if not, create one
+subprocess.run(['mkdir', '-p', 'out/Audio'])
+subprocess.run(['mkdir', '-p', 'out/Gesture'])
+
 # output directories for the audio and csv file recieved from the client
 output_audio_path = "out/Audio/output"
 output_gesture_path = "out/Gesture/output.csv"
@@ -21,6 +25,7 @@ async def handle_message(websocket, path):
         message = await websocket.recv()
         # Decode the received message as a byte array
         byte_array = bytearray(message)
+        logging.info("Message recieved, byte array of length: " +byte_array.__len__().__str__())
 
         # check the 1st to 4th element, if the input is not a csv file (with content 'Time')
         if (byte_array[0:4] != b'Time'):
@@ -33,6 +38,15 @@ async def handle_message(websocket, path):
                             outputPath=f'{output_audio_path}.mp3')
             logging.info("Audio data recieved, saved and coverted")
         else:
+            # check if the audio file is already in the folder
+            # if not, prompt the user to record audio first. 
+            try:
+                with open(f"{output_audio_path}.mp3", "rb") as f:
+                    pass
+            except FileNotFoundError:
+                await websocket.send("Please record audio first.")
+                logging.info("Gesture CSV recieved first, but Audio file not found.")
+                continue
             # 1. save the csv file to folder 'out/Gesture/output.csv'
             filename = output_gesture_path
             with open(filename, "wb") as f:
@@ -51,11 +65,12 @@ async def handle_message(websocket, path):
             combine_prediction = combine_predict(audio_result, gesture_result)
             # 5. encode the string as bytes and send it back to the client
             response = str(combine_prediction)
-            await websocket.send(response.encode())
+            await websocket.send(response)
             logging.info(
                 f'Prediction result of :"{response}" has been stent to the client.')
             # 6. delete the audio and csv file
             subprocess.run(['rm', f'{output_audio_path}.mp3'])
+            subprocess.run(['rm', f'{output_audio_path}.raw'])
             subprocess.run(['rm', f'{output_gesture_path}'])
             logging.info("Audio and gesture data deleted")
 
