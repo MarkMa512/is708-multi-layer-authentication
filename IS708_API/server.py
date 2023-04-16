@@ -67,7 +67,7 @@ async def handle_message(websocket, path):
             response = str(combine_prediction)
             await websocket.send(response)
             logging.info(
-                f'Prediction result of :"{response}" has been stent to the client.')
+                f'Prediction result of :"{response}" has been sent to the client.')
             # 6. delete the audio and csv file
             subprocess.run(['rm', f'{output_audio_path}.mp3'])
             subprocess.run(['rm', f'{output_audio_path}.raw'])
