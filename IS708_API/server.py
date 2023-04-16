@@ -54,6 +54,10 @@ async def handle_message(websocket, path):
             await websocket.send(response.encode())
             logging.info(
                 f'Prediction result of :"{response}" has been stent to the client.')
+            # 6. delete the audio and csv file
+            subprocess.run(['rm', f'{output_audio_path}.mp3'])
+            subprocess.run(['rm', f'{output_gesture_path}'])
+            logging.info("Audio and gesture data deleted")
 
 
 def convertRawAudio(filePath, outputPath='out/Audio/output.mp3'):

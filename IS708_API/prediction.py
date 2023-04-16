@@ -28,6 +28,7 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> object:
         lambda x: (x - df['Timestamp'][0]))
     df = df.drop(["Timestamp"], axis=1)  # Drop "Timestamp" columns as features
     result_list = clf.predict(df)
+    logging.info("gesture prediction result: " + str(result_list[:4]))
     return result_list
 
 
@@ -42,11 +43,13 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
     # input_list = pad_sequences(
     #     input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
 
-    """padding for test with apple silicon"""
-    input_list = input_list[:2500]
-
-    
+    """padding using numpy for test with apple silicon"""
+    if input_list[0].__len__() < 2500:
+        input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
+    else:
+        input_list[0] = input_list[0][:2500]
     y_pred = svm.predict(input_list)
+    logging.info("audio prediction result: " + str(y_pred[0]))
     return y_pred[0]
 
 

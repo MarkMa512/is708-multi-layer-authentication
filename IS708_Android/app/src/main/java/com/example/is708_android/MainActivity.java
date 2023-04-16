@@ -1,8 +1,10 @@
 package com.example.is708_android;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,6 +14,8 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
 import android.view.View;
@@ -24,26 +28,37 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.io.File;
 import java.io.FileInputStream;
 
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener{
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     // Variables for recording audio
     private Button recordAudioButton;
     private boolean isRecording = false;
     private Timer timer;
-    private  WebSocketClient webSocketClient;
+    private WebSocketClient webSocketClient;
     private File audioFile;
 
-    MediaRecorder mediaRecorder;
+    private static final int SAMPLE_RATE = 44100;
+    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
+    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
+    private int bufferSize;
+    private AudioRecord audioRecord;
+    private Thread recordingThread;
 
     // Variables for recording gesture
     private Button recordGestureButton;
@@ -51,9 +66,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor accelerometer;
     private Sensor gyroscope;
     private boolean isRecordingGesture = false;
-    private File gestureFile;
-    private FileWriter fileWriter;
-    private long startTime;
+
+    private List<String> gestureData = Collections.synchronizedList(new ArrayList<>());
+    private static final long RECORDING_DURATION_MS = 3000;
+    private static final long SAMPLING_INTERVAL_MS = 1;
 
     // Variables for sending data over websocket
     private String serverUrl = "ws://10.0.2.2:8086";
@@ -104,81 +120,198 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         requestPermissions(new String[]{android.Manifest.permission.HIGH_SAMPLING_RATE_SENSORS}, 1);
     }
 
-    private void startRecordingAudio(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                recordAudioButton.setText("Stop Audio Recording");
-            }
-        });
+    private void startRecordingAudio() {
+        runOnUiThread(() -> recordAudioButton.setText("Stop Recording"));
         isRecording = true;
 
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-           @Override
-           public void run() {
-               stopRecordingAudio();
-           }
-        }, 3000);
-
-       // create the audio file
-        try{
-            audioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "audio.raw");
-            audioFile.createNewFile();
-        } catch (IOException e){
-            e.printStackTrace();
+        bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
 
-        // Initialize MediaRecorder again, else will encounter java.lang.IllegalStateException error
-        mediaRecorder = new MediaRecorder();
+        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSize);
 
-        // start recording Audio
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        mediaRecorder.setOutputFile(audioFile.getAbsolutePath());
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
+        // Create the audio file
         try {
-            mediaRecorder.prepare();
-            mediaRecorder.start();
-            Toast.makeText(this, "Audio Recording started", Toast.LENGTH_SHORT).show();
+            audioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "audio.raw");
+            audioFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    private void stopRecordingAudio(){
-        // change button text and reset isRecording flag
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                recordAudioButton.setText("Record Audio");
-                Toast.makeText(MainActivity.this, "Audio Recording Stopped. Data Saved. ", Toast.LENGTH_SHORT).show();
+        audioRecord.startRecording();
+        Toast.makeText(this, "Audio Recording started", Toast.LENGTH_SHORT).show();
+
+        recordingThread = new Thread(() -> {
+            try (FileOutputStream fos = new FileOutputStream(audioFile)) {
+                ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
+
+                while (isRecording) {
+                    int bytesRead = audioRecord.read(buffer, bufferSize);
+                    fos.write(buffer.array(), 0, bytesRead);
+                    buffer.clear();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
-        isRecording = false;
-        // Stop recording and release MediaRecorder
-        mediaRecorder.stop();
-        mediaRecorder.release();
+        recordingThread.start();
 
-        // cancel the timer
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                stopRecordingAudio();
+            }
+        }, 3000);
+    }
+
+    private void stopRecordingAudio() {
+        // Change button text and reset isRecording flag
+        runOnUiThread(() -> recordAudioButton.setText("Record Audio"));
+
+        isRecording = false;
+
+        // Stop recording and release AudioRecord
+        audioRecord.stop();
+        audioRecord.release();
+        audioRecord = null;
+
+        // Stop recording thread
+        if (recordingThread != null) {
+            try {
+                recordingThread.join();
+                recordingThread = null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Cancel the timer
         timer.cancel();
 
+        runOnUiThread(() -> Toast.makeText(this, "Audio Recording Stopped", Toast.LENGTH_SHORT).show());
+
         /*
-        * Send audio file over webserver
-        * */
+         * Send audio file over webserver
+         * */
 
         try {
             byte[] audioArrayByte = convertFileToByteArray(audioFile);
             sendDataOverWebSocket(audioArrayByte, serverUrl);
-        }catch (IOException e){
+        }catch (IOException | URISyntaxException e){
             e.printStackTrace();
-        }catch (URISyntaxException e){
+        }
+    }
+
+    private void startRecordingGesture() {
+
+        gestureData.clear();
+        isRecordingGesture = true;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recordGestureButton.setText("Stop Gesture Recording");
+                Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                stopRecordingGesture();
+            }
+        }, RECORDING_DURATION_MS);
+    }
+
+    private void stopRecordingGesture() {
+        isRecordingGesture = false;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recordGestureButton.setText("Record Gesture");
+                Toast.makeText(MainActivity.this, "Gesture Recording Stopped. Data saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+        sensorManager.unregisterListener(this, accelerometer);
+        sensorManager.unregisterListener(this, gyroscope);
+
+        try {
+            saveGestureDataToCSV();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            File gestureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "gesture.csv");
+            byte[] gestureArrayByte = convertFileToByteArray(gestureFile);
+            sendDataOverWebSocket(gestureArrayByte, serverUrl);
+        }catch (IOException | URISyntaxException e){
             e.printStackTrace();
         }
 
     }
+
+    private void saveGestureDataToCSV() throws IOException {
+        File gestureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "gesture.csv");
+        try (FileWriter writer = new FileWriter(gestureFile)) {
+            writer.write("Timestamp,AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ\n");
+            synchronized (gestureData) {
+                for (String line : gestureData) {
+                    writer.write(line);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        double accelX = 0, accelY = 0, accelZ = 0;
+        double gyroX = 0, gyroY = 0, gyroZ = 0;
+        if (isRecordingGesture) {
+            long timestamp = SystemClock.elapsedRealtimeNanos();
+            int sensorType = event.sensor.getType();
+            synchronized (gestureData) {
+                if (sensorType == Sensor.TYPE_ACCELEROMETER) {
+                    accelX = event.values[0];
+                    accelY = event.values[1];
+                    accelZ = event.values[2];
+                } else if (sensorType == Sensor.TYPE_GYROSCOPE) {
+                    gyroX = event.values[0];
+                    gyroY = event.values[1];
+                    gyroZ = event.values[2];
+                }
+
+                if (sensorType == Sensor.TYPE_ACCELEROMETER || sensorType == Sensor.TYPE_GYROSCOPE) {
+                    String line = String.format(Locale.US, "%d,%.7f,%.7f,%.7f,%.7f,%.7f,%.7f\n", timestamp, accelX, accelY, accelZ, gyroX, gyroY, gyroZ);
+                    gestureData.add(line);
+                    try {
+                        Thread.sleep(SAMPLING_INTERVAL_MS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do nothing
+    }
+
 
     private byte[] convertFileToByteArray(File audioFile) throws IOException {
         // Create input stream from audio file
@@ -196,109 +329,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return byteArray;
     }
 
-    private void startRecordingGesture() {
-        isRecordingGesture = true;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                recordGestureButton.setText("Stop Gesture Recording");
-                Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                stopRecordingGesture();
-            }
-        }, 3000);
-
-        try {
-            // Create CSV file
-            gestureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "gesture.csv");
-            gestureFile.createNewFile();
-
-            // Initialize FileWriter
-            fileWriter = new FileWriter(gestureFile);
-
-            // Write CSV headers
-            fileWriter.write("Timestamp,AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ\n");
-
-            // Register sensor event listeners
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-            sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
-
-            // Record start time
-            startTime = SystemClock.elapsedRealtime();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopRecordingGesture() {
-        isRecordingGesture = false;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                recordGestureButton.setText("Record Gesture");
-                Toast.makeText(MainActivity.this, "Gesture Recording Stopped. Data saved", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        // Unregister sensor event listeners
-        sensorManager.unregisterListener(this, accelerometer);
-        sensorManager.unregisterListener(this, gyroscope);
-
-        try {
-            // Close FileWriter
-            fileWriter.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        // cancel the timer
-        timer.cancel();
-
-        try {
-            byte[] gestureArrayByte = convertFileToByteArray(gestureFile);
-            sendDataOverWebSocket(gestureArrayByte, serverUrl);
-        }catch (IOException e){
-            e.printStackTrace();
-        }catch (URISyntaxException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (isRecordingGesture) {
-            try {
-                // Calculate elapsed time
-//                long elapsedTime = SystemClock.elapsedRealtime() - startTime;
-                // Get the current time stamp.
-                long timestamp = event.timestamp;
-
-                // Write sensor data to CSV file
-                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    fileWriter.write(timestamp + "," + event.values[0] + "," + event.values[1] + "," + event.values[2] + ",");
-                } else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-                    fileWriter.write(event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Do nothing
-    }
-
-
     public void sendDataOverWebSocket(byte[] byteArray, String serverUrl) throws IOException, URISyntaxException {
         CountDownLatch connectionLatch = new CountDownLatch(1);
         // Create a WebSocket client instance
@@ -313,6 +343,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onMessage(String message) {
                 Log.i("WebSocket", "Received message: " + message);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -332,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         try {
             // Wait for the connection to be established
-            if (!connectionLatch.await(5, TimeUnit.SECONDS)) {
+            if (!connectionLatch.await(10, TimeUnit.SECONDS)) {
                 Log.e("WebSocket", "WebSocket connection timeout");
                 webSocketClient.close();
                 return;
@@ -342,14 +378,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             webSocketClient.send(byteArray);
             Log.i("WebSocket", "Sent byteArray of length: " + byteArray.length);
 
-            // Close the WebSocket connection
-            webSocketClient.close();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         // Close the WebSocket connection
-        webSocketClient.close();
+        //webSocketClient.close();
     }
 
 }
