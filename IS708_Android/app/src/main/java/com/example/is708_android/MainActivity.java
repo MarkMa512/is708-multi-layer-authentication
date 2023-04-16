@@ -3,6 +3,7 @@ package com.example.is708_android;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 
 import android.media.MediaRecorder;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private  WebSocketClient webSocketClient;
     private File audioFile;
 
-    MediaRecorder mediaRecorder = new MediaRecorder();
+    MediaRecorder mediaRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +76,14 @@ public class MainActivity extends AppCompatActivity {
 
        // create the audio file
         try{
-            audioFile = new File(getExternalFilesDir("Downloads"), "audio.raw");
+            audioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "audio.raw");
             audioFile.createNewFile();
         } catch (IOException e){
             e.printStackTrace();
         }
+
+        // Initialize MediaRecorder again, else will encounter java.lang.IllegalStateException error
+        mediaRecorder = new MediaRecorder();
 
         // start recording Audio
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -102,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 recordButton.setText("Record Audio");
+                Toast.makeText(MainActivity.this, "Recording Stopped", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -125,10 +130,6 @@ public class MainActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-//        Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
-        /**
-         * java.lang.NullPointerException: Can't toast on a thread that has not called Looper.prepare()
-         */
     }
 
     private byte[] convertAudioToByteArray(File audioFile) throws IOException {
