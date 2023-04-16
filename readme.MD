@@ -25,7 +25,7 @@
     <a href="https://github.com/MarkMa512/is708-multi-layer-authentication"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/MarkMa512/is708-multi-layer-authentication">View Demo</a>
+    <a href="#quick-demo">View Demo</a>
     ·
     <a href="https://github.com/MarkMa512/is708-multi-layer-authentication/issues">Report Bug</a>
     ·
@@ -42,6 +42,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#quick-demo">Quick Demo</a></li>
         <li><a href="#built-with">Built With</a></li>
         <li><a href="#directories">Directries</a></li>
       </ul>
@@ -76,10 +77,7 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication.
 **Notice: This repositpry is Private on github until the course is over. Thank you.**
 
 ### Quick Demo
-
-<p align="center">
 https://user-images.githubusercontent.com/42110231/232298561-4d78a7be-a1a5-4a41-a552-c634caf37024.mov
-</p>
 
 
 ### Directories
