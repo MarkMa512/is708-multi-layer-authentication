@@ -15,7 +15,7 @@ audio_model, gesture_model = load_models()
 subprocess.run(['mkdir', '-p', 'out/Audio'])
 subprocess.run(['mkdir', '-p', 'out/Gesture'])
 
-# output directories for the audio and csv file recieved from the client
+# define output directories for the audio and csv file recieved from the client
 output_audio_path = "out/Audio/output"
 output_gesture_path = "out/Gesture/output.csv"
 

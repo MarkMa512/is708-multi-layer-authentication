@@ -28,7 +28,7 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> object:
         lambda x: (x - df['Timestamp'][0]))
     df = df.drop(["Timestamp"], axis=1)  # Drop "Timestamp" columns as features
     result_list = clf.predict(df)
-    logging.info("gesture prediction result: " + str(result_list[:4]))
+    logging.info("gesture prediction result: " + str(result_list[:20]))
     return result_list
 
 

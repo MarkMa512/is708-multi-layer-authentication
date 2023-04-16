@@ -319,7 +319,4 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Readme Template adopted from [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 
-### Reference 
-[Connecting Android Apps to localhost, Simplified](https://dev.to/tusharsadhwani/connecting-android-apps-to-localhost-simplified-57lm)
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
