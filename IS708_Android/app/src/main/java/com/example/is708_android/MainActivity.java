@@ -31,6 +31,8 @@ import java.net.URISyntaxException;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private File gestureFile;
     private FileWriter fileWriter;
     private long startTime;
+
+    // Variables for sending data over websocket
+    private String serverUrl = "ws://10.0.2.2:8086";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                recordAudioButton.setText("Stop Recording");
+                recordAudioButton.setText("Stop Audio Recording");
             }
         });
         isRecording = true;
@@ -136,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         try {
             mediaRecorder.prepare();
             mediaRecorder.start();
-            Toast.makeText(this, "Recording started", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Audio Recording started", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void run() {
                 recordAudioButton.setText("Record Audio");
-                Toast.makeText(MainActivity.this, "Recording Stopped", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Audio Recording Stopped. Data Saved. ", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -163,14 +168,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         /*
         * Send audio file over webserver
         * */
-//        try {
-//            byte[] audioArrayByte = convertAudioToByteArray(audioFile);
-//            sendDataOverWebSocket(audioArrayByte, "ws:localhost:8086");
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }catch (URISyntaxException e){
-//            e.printStackTrace();
-//        }
+
+        try {
+            byte[] audioArrayByte = convertFileToByteArray(audioFile);
+            sendDataOverWebSocket(audioArrayByte, serverUrl);
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (URISyntaxException e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -196,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void run() {
                 recordGestureButton.setText("Stop Gesture Recording");
+                Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -236,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void run() {
                 recordGestureButton.setText("Record Gesture");
-                Toast.makeText(MainActivity.this, "Gesture data saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Gesture Recording Stopped. Data saved", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -253,6 +260,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         // cancel the timer
         timer.cancel();
+
+        try {
+            byte[] gestureArrayByte = convertFileToByteArray(gestureFile);
+            sendDataOverWebSocket(gestureArrayByte, serverUrl);
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (URISyntaxException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -260,11 +277,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (isRecordingGesture) {
             try {
                 // Calculate elapsed time
-                long elapsedTime = SystemClock.elapsedRealtime() - startTime;
+//                long elapsedTime = SystemClock.elapsedRealtime() - startTime;
+                // Get the current time stamp.
+                long timestamp = event.timestamp;
 
                 // Write sensor data to CSV file
                 if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    fileWriter.write(elapsedTime + "," + event.values[0] + "," + event.values[1] + "," + event.values[2] + ",");
+                    fileWriter.write(timestamp + "," + event.values[0] + "," + event.values[1] + "," + event.values[2] + ",");
                 } else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
                     fileWriter.write(event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n");
                 }
@@ -281,18 +300,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     public void sendDataOverWebSocket(byte[] byteArray, String serverUrl) throws IOException, URISyntaxException {
+        CountDownLatch connectionLatch = new CountDownLatch(1);
         // Create a WebSocket client instance
         WebSocketClient webSocketClient = new WebSocketClient(new URI(serverUrl)) {
             @Override
-            public void onOpen(ServerHandshake handshakedata) {
+            public void onOpen(ServerHandshake handShakeData) {
                 Log.i("WebSocket", "WebSocket connection opened");
+                connectionLatch.countDown();
             }
 
             //Modify onMessage function to do show the output from Python Server.
             @Override
             public void onMessage(String message) {
                 Log.i("WebSocket", "Received message: " + message);
-
             }
 
             @Override
@@ -310,8 +330,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Connect to the WebSocket server
         webSocketClient.connect();
 
-        // Send the CSV data as a byte array over the WebSocket connection
-        webSocketClient.send(byteArray);
+        try {
+            // Wait for the connection to be established
+            if (!connectionLatch.await(5, TimeUnit.SECONDS)) {
+                Log.e("WebSocket", "WebSocket connection timeout");
+                webSocketClient.close();
+                return;
+            }
+
+            // Send the CSV data as a byte array over the WebSocket connection
+            webSocketClient.send(byteArray);
+            Log.i("WebSocket", "Sent byteArray of length: " + byteArray.length);
+
+            // Close the WebSocket connection
+            webSocketClient.close();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Close the WebSocket connection
         webSocketClient.close();

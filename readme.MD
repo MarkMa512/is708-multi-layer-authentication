@@ -271,6 +271,10 @@ pip install tensorflow
 ```
 5. if you encounter the error of `illegal hardware instruction` after running `python server.py `, this is becuase you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
 
+6. 
+
+`FileNotFoundError: [Errno 2] No such file or directory: 'out/Audio/output.raw'` 
+
 <!-- ROADMAP -->
 ## Roadmap
 Undergraduate / Master Student: 
