@@ -77,7 +77,10 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication.
 **Notice: This repositpry is Private on github until the course is over. Thank you.**
 
 ### Quick Demo
-https://user-images.githubusercontent.com/42110231/232298561-4d78a7be-a1a5-4a41-a552-c634caf37024.mov
+
+
+https://user-images.githubusercontent.com/42110231/232319506-63827e51-b087-43ea-bdd7-41270ad0e759.mov
+
 
 
 ### Directories
