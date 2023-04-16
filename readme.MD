@@ -77,9 +77,9 @@ This project aims to demonstrate the concept of Multi-layered Aunthentication.
 
 ### Quick Demo
 
-
+<p align="center">
 https://user-images.githubusercontent.com/42110231/232298561-4d78a7be-a1a5-4a41-a552-c634caf37024.mov
-
+</p>
 
 
 ### Directories
@@ -220,10 +220,10 @@ Do ensure that `sample.raw` is in folder `IS708_API/model_training`. The followi
 ### Launch Android Application
 
 1. Open Andorid Studio installed on your machine, open the project under `IS708_Android`. 
-2. Create a emulaor 
-3. Enable the access to the server running on localhost: 
-4. Record Audio by pressing the `Record Audio` button 
-5. Record Gesture by pressing the `Record Gesture` button
+2. Create a emulaor, choosing model Pixel XL API 33 (Andoid Version 13). 
+3. Run the application. 
+4. Record Audio by pressing the `Record Audio` button. 
+5. Record Gesture by pressing the `Record Gesture` button. 
 6. Prediction result will be shown as a Toast Message. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
