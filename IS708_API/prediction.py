@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import librosa
 import joblib
-from tensorflow.keras.preprocessing.sequence import pad_sequences
 import logging
 
 # set up logging
@@ -39,11 +38,12 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
     mfcc_flattened = mfcc_new.T.flatten().tolist()
     input_list.append(mfcc_flattened)
 
-    """ padding using tensor flow"""
+    """ By default: padding using tensor flow"""
+    from tensorflow.keras.preprocessing.sequence import pad_sequences
     input_list = pad_sequences(
         input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
 
-    """padding using numpy for test with apple silicon"""
+    """For Apple Silicon Mac: padding using numpy for test with apple silicon"""
     # if input_list[0].__len__() < 2500:
     #     input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
     # else:

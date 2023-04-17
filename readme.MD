@@ -281,8 +281,20 @@ pip uninstall tensorflow
 ```sh
 pip install tensorflow 
 ```
-5. if you encounter the error of `illegal hardware instruction` after running `python server.py `, this is becuase you are using a Apple Silicon Mac. Please try on a Intel-based Mac. 
+5. if you encounter the error of `illegal hardware instruction` after running `python server.py `, this is becuase you are using a Apple Silicon Mac. Please try on a Intel-based Mac. Alternatively, you can comment line 42-44 in `prediction.py` and uncomment line 47-50 to disable padding using Tensor Flow, and use Numpy for the padding. 
 
+```py
+    """ By default: padding using tensor flow"""
+    # from tensorflow.keras.preprocessing.sequence import pad_sequences
+    # input_list = pad_sequences(
+    #     input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
+
+    """For Apple Silicon Mac: padding using numpy for test with apple silicon"""
+    if input_list[0].__len__() < 2500:
+        input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
+    else:
+        input_list[0] = input_list[0][:2500]
+```
 
 <!-- ROADMAP -->
 ## Roadmap
