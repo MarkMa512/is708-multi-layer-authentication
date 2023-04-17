@@ -90,7 +90,7 @@ https://user-images.githubusercontent.com/42110231/232319506-63827e51-b087-43ea-
 - `IS708_API`: Python Backend Server  
   - `model_training`: Training data and Jupyter Note Booking for the Classification Model Building
 
-- `media_and_doc`: Photos and Screenshots of the project, together with the design document. 
+- `media`: Photos and Screenshots of the project. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -215,7 +215,7 @@ Do ensure that `sample.raw` is in folder `IS708_API/model_training`. The followi
 > yyyy-mm-dd hh:mm:14,240 - INFO - Connected to server.  
 > yyyy-mm-dd hh:mm:14,241 - INFO - Sent 257544 bytes of audio data to the server.  
 > yyyy-mm-dd hh:mm:14,242 - INFO - Sent 223684 bytes of gesture data to the server.  
-> yyyy-mm-dd hh:mm:18,475 - INFO - Received response: b'3'  
+> yyyy-mm-dd hh:mm:18,475 - INFO - Received response: 3  
 > yyyy-mm-dd hh:mm:18,475 - INFO - ========== Server Setup Success! ========== 
 
 ### Launch Android Application
@@ -225,6 +225,25 @@ Do ensure that `sample.raw` is in folder `IS708_API/model_training`. The followi
 3. Run the application. 
 4. Record Audio by pressing the `Record Audio` button. 
 5. Record Gesture by pressing the `Record Gesture` button. 
+  - The recorded audio file `audio.raw` and recorded IMU file `gesture.csv` will be saved to the Download Directory inside your Android Emulator. You can access them via the Phone’s File folder, or using adb shell. 
+
+  ```sh
+  adb shell
+  ```
+
+  ```sh
+  cd /sdcard/Download
+  ```
+
+  - list all the files 
+  ```sh
+  ls -la
+  ```
+
+  - inspect csv content
+  ```
+  cat gesture.csv
+  ```
 6. Prediction result will be shown as a Toast Message. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
