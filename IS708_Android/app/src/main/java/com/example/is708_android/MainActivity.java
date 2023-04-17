@@ -217,10 +217,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
         });
 
-        // Custom delay in microseconds (1 millisecond = 1000 microseconds)
-//        int customDelayMicroseconds = 500;
-
-        // Register the listener with a custom delay
+        // Register the listener with fastest delay
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
 
@@ -275,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         double accelX = 0, accelY = 0, accelZ = 0;
         double gyroX = 0, gyroY = 0, gyroZ = 0;
+        // Only record data if the recording button is pressed
         if (isRecordingGesture) {
             long timestamp = SystemClock.elapsedRealtimeNanos();
             int sensorType = event.sensor.getType();
