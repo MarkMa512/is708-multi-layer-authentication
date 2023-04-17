@@ -184,9 +184,9 @@ Note that the following softwares will be installed on macOS (as well as the req
 ./raw_to_mp3.sh
 ```
 
-3. Run `Audio Classification Notebook.ipynb` and `Gesture Classification Notebook.ipynb` respectively to create the models. Upon completion, the following models should be created in `model_training` directory: 
+3. Run `Audio Classification Notebook.ipynb` and `Gesture Classification Notebook (Row by Row).ipynb` respectively to create the models. Upon completion, the following models should be created in `model_training` directory: 
   - `audio_svm_model.pkl`
-  - `gesture_random_forest_classifier_model_relative_time.pkl`
+  - `gesture_random_forest_classifier_model_row_by_row.pkl`
     - This model takes around 5-10 minutes to build, depends on your machine performance. 
 
 ### Pre-trained model 
