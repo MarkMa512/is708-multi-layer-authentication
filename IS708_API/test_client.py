@@ -14,7 +14,7 @@ with open('model_training/sample.raw', 'rb') as f:
     audio_file = f.read()
 
 # read a gesture csv  file
-with open('model_training/Gesture/3/1677689358090.csv', 'rb') as f:
+with open('model_training/Gesture/1/1677662440520.csv', 'rb') as f:
     gesture_file = f.read()
 
 # send the audio as a binary message to the server
@@ -30,8 +30,8 @@ while True:
     try:
         response = ws.recv()
         logging.info(f"Received response: {response}")
-        if response == '3':
-            # the expected response is 3
+        if response == '1':
+            # the expected response is 1
             logging.info("========== Server Setup Success! ==========")
     except websocket.WebSocketConnectionClosedException:
         logging.warning("WebSocket connection closed.")

@@ -14,21 +14,36 @@ def load_models() -> object:
     logging.info("loading audio and gesture models... Please wait.")
     audio_model = joblib.load('model_training/audio_svm_model.pkl')
     gesture_model = joblib.load(
-        'model_training/gesture_random_forest_classifier_model_relative_time.pkl')
+        'model_training/gesture_random_forest_classifier_model_integral.pkl')
     logging.info("audio and gesture models are loaded!")
     return audio_model, gesture_model
 
 
-def predict_new_gesture(csv_file_path: str, clf: object) -> object:
+def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
+    """
+    Read a CSV file of IMU sensor reading and predict the label for each line of reading using trained model clf
+
+    Parameters:
+        - csv_file_path (str): Path to the CSV contraining IMU sensor reading
+
+    Returns:
+        - result (int): predicted user
+    """
+    input_list = []
     df = pd.read_csv(csv_file_path)
     # Calculate the relative time difference for each row of reading
     # compared to the 1st row of reading in each CSV file / reading
     df['relative_time'] = df['Timestamp'].apply(
         lambda x: (x - df['Timestamp'][0]))
     df = df.drop(["Timestamp"], axis=1)  # Drop "Timestamp" columns as features
-    result_list = clf.predict(df)
-    logging.info("gesture prediction result: " + str(result_list[:20]))
-    return result_list
+    df = df.iloc[10:2710, :]  # standardize the length of the dataframe
+    logging.info("df length" + str(len(df)))
+    flattened_list = df.to_numpy().flatten().tolist()
+    input_list.append(flattened_list)
+    result_list = clf.predict(input_list)
+    logging.info("===== gesture prediction result (User): " +
+                 str(result_list[0]) + " =====")
+    return result_list[0]
 
 
 def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
@@ -48,20 +63,18 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
     #     input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
     # else:
     #     input_list[0] = input_list[0][:2500]
-    
+
     y_pred = svm.predict(input_list)
-    logging.info("audio prediction result: " + str(y_pred[0]))
+    logging.info("===== audio prediction result (User): " +
+                 str(y_pred[0]) + " =====")
     return y_pred[0]
 
 
-def combine_predict(audio_result: int, gesture_result: object) -> int:
-    counts = np.bincount(gesture_result)
-    gesture_max_result = np.argmax(counts)
-
-    if gesture_max_result == audio_result:
-        return gesture_max_result
+def combine_predict(audio_result: int, gesture_result: int) -> int:
+    if (audio_result == gesture_result):
+        return audio_result
     else:
-        return int(gesture_max_result)
+        return 0
 
 
 """

@@ -217,6 +217,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Toast.makeText(MainActivity.this, "Gesture Recording Started", Toast.LENGTH_SHORT).show();
         });
 
+        // Custom delay in microseconds (1 millisecond = 1000 microseconds)
+//        int customDelayMicroseconds = 500;
+
+        // Register the listener with a custom delay
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
 
@@ -284,15 +288,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     gyroY = event.values[1];
                     gyroZ = event.values[2];
                 }
-
                 if (sensorType == Sensor.TYPE_ACCELEROMETER || sensorType == Sensor.TYPE_GYROSCOPE) {
                     String line = String.format(Locale.US, "%d,%.7f,%.7f,%.7f,%.7f,%.7f,%.7f\n", timestamp, accelX, accelY, accelZ, gyroX, gyroY, gyroZ);
                     gestureData.add(line);
-                    try {
-                        Thread.sleep(SAMPLING_INTERVAL_MS);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }

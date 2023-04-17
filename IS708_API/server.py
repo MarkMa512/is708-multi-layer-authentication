@@ -1,7 +1,7 @@
 import asyncio
 import websockets
 import subprocess
-from prediction import load_models, predict_new_audio, predict_new_gesture, combine_predict
+from prediction import load_models, predict_new_audio, predict_new_gesture_integral, combine_predict
 import logging
 
 # set up logging
@@ -25,7 +25,8 @@ async def handle_message(websocket, path):
         message = await websocket.recv()
         # Decode the received message as a byte array
         byte_array = bytearray(message)
-        logging.info("Message recieved, byte array of length: " +byte_array.__len__().__str__())
+        logging.info("Message recieved, byte array of length: " +
+                     byte_array.__len__().__str__())
 
         # check the 1st to 4th element, if the input is not a csv file (with content 'Time')
         if (byte_array[0:4] != b'Time'):
@@ -48,13 +49,14 @@ async def handle_message(websocket, path):
             logging.info("Audio data recieved, saved and coverted")
         else:
             # 0. check if the audio file is already in the folder
-            # if not, prompt the user to record audio first. 
+            # if not, prompt the user to record audio first.
             try:
                 with open(f"{output_audio_path}.mp3", "rb") as f:
                     pass
             except FileNotFoundError:
                 await websocket.send("Please record audio first.")
-                logging.info("Gesture CSV recieved first, but Audio file not found.")
+                logging.info(
+                    "Gesture CSV recieved first, but Audio file not found.")
                 continue
             # 1. save the csv file to folder 'out/Gesture/output.csv'
             filename = output_gesture_path
@@ -68,7 +70,7 @@ async def handle_message(websocket, path):
             audio_result = predict_new_audio(
                 f"{output_audio_path}.mp3", audio_model)
             # 3. predict based on gesture data
-            gesture_result = predict_new_gesture(
+            gesture_result = predict_new_gesture_integral(
                 output_gesture_path, gesture_model)
             # 4. combine result from both predictions
             combine_prediction = combine_predict(audio_result, gesture_result)
