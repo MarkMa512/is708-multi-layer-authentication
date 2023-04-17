@@ -281,7 +281,7 @@ pip uninstall tensorflow
 ```sh
 pip install tensorflow 
 ```
-5. if you encounter the error of `illegal hardware instruction` after running `python server.py `, this is becuase you are using a Apple Silicon Mac. Please try on a Intel-based Mac. Alternatively, you can comment line 42-44 in `prediction.py` and uncomment line 47-50 to disable padding using Tensor Flow, and use Numpy for the padding. 
+5. If you encounter the error of `illegal hardware instruction` after running `python server.py `, or continue to experience the error of `The kernel appears to have died. It will restart automatically.`, this is becuase of python was not correctly installed on your Apple Silicon Mac. Please try on a Intel-based Mac. Alternatively, you can comment line 42-44 in `prediction.py` and uncomment line 47-50 to disable padding using Tensor Flow, and use Numpy for the padding. 
 
 ```py
     """ By default: padding using tensor flow"""

@@ -3,7 +3,6 @@ import numpy as np
 import librosa
 import joblib
 import logging
-import platform
 
 # set up logging
 logging.basicConfig(
@@ -82,23 +81,21 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
     mfcc_flattened = mfcc_new.T.flatten().tolist()
     input_list.append(mfcc_flattened)
 
-    if platform.machine().startswith('arm'):
-        # For Apple Silicon Mac: padding using numpy for test with apple silicon
-        if input_list[0].__len__() < 2500:
-            input_list[0].extend(
-                [0] * (2500 - input_list[0].__len__()))  # padding with 0
-        else:
-            input_list[0] = input_list[0][:2500]
-    else:
-        # For Intel Mac: padding using tensorflow for test with intel mac
-        from tensorflow.keras.preprocessing.sequence import pad_sequences
-        input_list = pad_sequences(
-            input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
+    """ By default: padding using tensor flow"""
+    from tensorflow.keras.preprocessing.sequence import pad_sequences
+    input_list = pad_sequences(
+        input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
 
-    y_pred = svm.predict(input_list)
+    """For Apple Silicon Mac: padding using numpy for test with apple silicon"""
+    # if input_list[0].__len__() < 2500:
+    #     input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
+    # else:
+    #     input_list[0] = input_list[0][:2500]
+
+    result_list = svm.predict(input_list)
     logging.info("===== audio prediction result (User): " +
-                 str(y_pred[0]) + " =====")
-    return y_pred[0]
+                 str(result_list[0]) + " =====")
+    return result_list[0]
 
 
 def combine_predict(audio_result: int, gesture_result: int) -> int:
