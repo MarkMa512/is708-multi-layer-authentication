@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private final List<String> gestureData = Collections.synchronizedList(new ArrayList<>());
     private static final long RECORDING_DURATION_MS = 3000;
-    private static final long SAMPLING_INTERVAL_MS = 1;
 
     // Variables for sending data over websocket
     private final String SERVER_URL = "ws://10.0.2.2:8086";
@@ -165,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void run() {
                 stopRecordingAudio();
             }
-        }, 3000);
+        }, RECORDING_DURATION_MS);
     }
 
     @SuppressLint("SetTextI18n")
