@@ -1,7 +1,7 @@
 import asyncio
 import websockets
 import subprocess
-from prediction import load_models, predict_new_audio, predict_new_gesture_integral, combine_predict
+from prediction import load_models, predict_new_audio, predict_new_gesture, combine_predict
 import logging
 
 # set up logging
@@ -70,7 +70,7 @@ async def handle_message(websocket, path):
             audio_result = predict_new_audio(
                 f"{output_audio_path}.mp3", audio_model)
             # 3. predict based on gesture data
-            gesture_result = predict_new_gesture_integral(
+            gesture_result = predict_new_gesture(
                 output_gesture_path, gesture_model)
             # 4. combine result from both predictions
             combine_prediction = combine_predict(audio_result, gesture_result)

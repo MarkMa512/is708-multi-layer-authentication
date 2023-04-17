@@ -18,6 +18,29 @@ def load_models() -> object:
     logging.info("audio and gesture models are loaded!")
     return audio_model, gesture_model
 
+def predict_new_gesture(csv_file_path: str, clf: object) -> int:
+    
+    """
+    Read a CSV file of IMU sensor reading and predict the label for each line of reading using trained model clf
+    
+    Parameters:
+        - csv_file_path (str): Path to the CSV contraining IMU sensor reading
+    
+    Returns:
+        - result (int): predicted user
+    """
+    
+    df = pd.read_csv(csv_file_path)
+    # Calculate the relative time difference for each row of reading
+    # compared to the 1st row of reading in each CSV file / reading
+    df['relative_time'] = df['Timestamp'].apply(lambda x: (x - df['Timestamp'][0]))
+    df = df.drop(["Timestamp"], axis=1)  # Drop "Timestamp" columns as features
+    result_list = clf.predict(df) # - result_list (numpy.ndarray): An array of predicted label for each row of reading in the CSV file
+    frequncy_dict = {i: np.count_nonzero(result_list == i) for i in result_list}
+    counts = np.bincount(result_list)
+    result = np.argmax(counts)
+    return result
+
 
 def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
     """
