@@ -10,7 +10,13 @@ logging.basicConfig(
 
 
 def load_models() -> object:
-    # Load the trained model
+    """
+    Load the trained model for audio and gesture prediction.
+
+    Returns:
+        - audio_model (object): Trained SVM model for audio prediction
+        - gesture_model (object): Trained Random Forest Classifier model for gesture prediction
+    """
     logging.info("loading audio and gesture models... Please wait.")
     audio_model = joblib.load('model_training/audio_svm_model.pkl')
     gesture_model = joblib.load(
@@ -27,7 +33,7 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> int:
         - csv_file_path (str): Path to the CSV contraining IMU sensor reading
 
     Returns:
-        - result (int): predicted user
+        - result (int): the predicted userID for the given CSV file
     """
 
     df = pd.read_csv(csv_file_path)
@@ -46,7 +52,7 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> int:
     result = np.argmax(counts)
     return result
 
-def predict_new_gesture_proba(csv_file_path: str, clf: object) -> list:
+def predict_new_gesture_proba(csv_file_path: str, clf: object) -> dict:
     """
     Read a CSV file of IMU sensor reading and produce probability for each user using trained model clf
 
@@ -54,7 +60,7 @@ def predict_new_gesture_proba(csv_file_path: str, clf: object) -> list:
         - csv_file_path (str): Path to the CSV contraining IMU sensor reading
 
     Returns:
-        - probability_dict (dict): userID: probability
+        - probability_dict (dict): {userID:probability}
     """
     df = pd.read_csv(csv_file_path)
     # Calculate the relative time difference for each row of reading
@@ -79,7 +85,7 @@ def predict_new_gesture_proba(csv_file_path: str, clf: object) -> list:
 def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
 
     """
-    This function is retired. 
+    This function is retired as Row by Row model is used. 
     """
 
     """
@@ -89,7 +95,7 @@ def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
         - csv_file_path (str): Path to the CSV contraining IMU sensor reading
 
     Returns:
-        - result (int): predicted user
+        - result (int): predicted userID for the given CSV file
     """
     input_list = []
     df = pd.read_csv(csv_file_path)
@@ -118,7 +124,7 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
         - n_mfcc (int): Number of Mel-frequency cepstral coefficients (MFCC) to extract, default = 20. 
     
     Returns:
-        - result_list[0](int): The predicted label for the given new audio. 
+        - result_list[0](int): The predicted userID for the given new audio. 
     """
     input_list = []
     signal_new, sr_new = librosa.load(new_audio_path, duration=3.0)
@@ -126,6 +132,7 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
     mfcc_flattened = mfcc_new.T.flatten().tolist()
     input_list.append(mfcc_flattened)
 
+    # Padding / truncating the input list to ensure that they are consistent to the length of the training data
     """ By default: padding using tensor flow"""
     # from tensorflow.keras.preprocessing.sequence import pad_sequences
     # input_list = pad_sequences(
@@ -152,7 +159,7 @@ def predict_new_audio_proba(new_audio_path: str, svm: object, n_mfcc=20) -> dict
         - n_mfcc (int): Number of Mel-frequency cepstral coefficients (MFCC) to extract, default = 20. 
     
     Returns:
-        - probabilities (dict):  userID: probability
+        - probabilities (dict):  {userID:probability}
 
     """
     input_list = []
@@ -161,6 +168,7 @@ def predict_new_audio_proba(new_audio_path: str, svm: object, n_mfcc=20) -> dict
     mfcc_flattened = mfcc_new.T.flatten().tolist()
     input_list.append(mfcc_flattened)
 
+    # Padding / truncating the input list to ensure that they are consistent to the length of the training data
     """ By default: padding using tensor flow"""
     # from tensorflow.keras.preprocessing.sequence import pad_sequences
     # input_list = pad_sequences(
@@ -178,8 +186,25 @@ def predict_new_audio_proba(new_audio_path: str, svm: object, n_mfcc=20) -> dict
         "----- audio probability (User:Probability): " + str(probability_dict) +"-----")
     return probability_dict
 
-# fusion logic
+"""
+Fusion Logic
+"""
 def combine_predict(audio_result: int, gesture_result: int, new_audio_path:str,audio_model:object, csv_file_path:str, gesture_model:object) -> int:
+    """
+    Combine the prediction result from audio and gesture model and return the final prediction result.
+
+    Parameters:
+        - audio_result (int): The predicted userID for the given new audio.
+        - gesture_result (int): The predicted userID for the given new gesture.
+        - new_audio_path (str): Path to the folder containing new audio to be predicted.
+        - audio_model: trained SVM model for audio
+        - csv_file_path (str): Path to the folder containing new gesture to be predicted.
+        - gesture_model: trained SVM model for gesture
+    
+    Returns:
+        - If both model predict the same user, simply return the user.
+        - max(joint_prob, key=joint_prob.get)(int): The predicted userID for the given new audio and gesture, with the highest joint probability.
+    """
     # if both model predict the same user, simply return the user
     if (audio_result == gesture_result):
         return audio_result
@@ -193,7 +218,8 @@ def combine_predict(audio_result: int, gesture_result: int, new_audio_path:str,a
         joint_prob = {}
         # for each user, calculate the joint probability
         for user in range(1, 6):
-            # assuming the probability of each user is independent
+            # since the action of speaking does not affect the gesture performance, 
+            # and both models are trained independently, we assume that the joint probability is the product of the individual probabilities
             joint_prob[user] = audio_prob[user] * gesture_prob[user]
         logging.info("----- joint probability (User:Probability): " + str(joint_prob) +"-----")
         return max(joint_prob, key=joint_prob.get)
