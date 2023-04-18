@@ -223,17 +223,17 @@ python prediction.py
 ```
 
 The following output should be displayed: 
->yyyy-mm-dd hh:mm:31,113 - INFO - loading audio and gesture models... Please wait.
->yyyy-mm-dd hh:mm:31,623 - INFO - audio and gesture models are loaded!
->===== Simulate a case where by the audio model predicts user 1, and the gesture model predicts user 4 =====
->yyyy-mm-dd hh:mm:34,004 - INFO - ===== audio prediction result (User): 1 =====
->yyyy-mm-dd hh:mm:34,060 - INFO - ===== gesture prediction result (User:Count): {1: 0, 2: 0, 3: 0, 4: 2840, 5: 0} =====
->yyyy-mm-dd hh:mm:34,069 - INFO - ----- audio probability (User:Probability): {1: 0.94295725011915, 2: 0.0375167850324598, 3: 0.0053484973854087394, 4: 0.0038162213458059436, 5: 0.010361246117175286}-----
->yyyy-mm-dd hh:mm:34,116 - INFO - ----- gesture probability (User:Probability): {1: 0.0, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0}-----
->yyyy-mm-dd hh:mm:34,116 - INFO - ----- joint probability (User:Probability): {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0038162213458059436, 5: 0.0}-----
->Audio Result: 1
->Gesture Result: 4
->Combined Result: 4
+>yyyy-mm-dd hh:mm:31,113 - INFO - loading audio and gesture models... Please wait.  
+>yyyy-mm-dd hh:mm:31,623 - INFO - audio and gesture models are loaded!  
+>===== Simulate a case where by the audio model predicts user 1, and the gesture model predicts user 4 =====  
+>yyyy-mm-dd hh:mm:34,004 - INFO - ===== audio prediction result (User): 1 =====  
+>yyyy-mm-dd hh:mm:34,060 - INFO - ===== gesture prediction result (User:Count): {1: 0, 2: 0, 3: 0, 4: 2840, 5: 0} =====  
+>yyyy-mm-dd hh:mm:34,069 - INFO - ----- audio probability (User:Probability): {1: 0.94295725011915, 2: 0.0375167850324598, 3: 0.0053484973854087394, 4: 0.0038162213458059436, 5: 0.010361246117175286}-----  
+>yyyy-mm-dd hh:mm:34,116 - INFO - ----- gesture probability (User:Probability): {1: 0.0, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0}-----  
+>yyyy-mm-dd hh:mm:34,116 - INFO - ----- joint probability (User:Probability): {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0038162213458059436, 5: 0.0}-----  
+>Audio Result: 1  
+>Gesture Result: 4  
+>Combined Result: 4  
 
 ### Launch Android Application
 
