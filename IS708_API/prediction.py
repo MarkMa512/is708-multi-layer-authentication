@@ -68,6 +68,8 @@ def predict_new_gesture_proba(csv_file_path: str, clf: object) -> list:
         result_list == i) for i in range(1, 6)}
     total_counts = sum(frequncy_dict.values())
     probability_dict = {k: v / total_counts for k, v in frequncy_dict.items()}
+    logging.info(
+        "----- gesture probability (User:Probability): " + str(probability_dict) +"-----")
     return probability_dict
 
 def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
@@ -162,12 +164,14 @@ def predict_new_audio_proba(new_audio_path: str, svm: object, n_mfcc=20) -> dict
         input_list[0] = input_list[0][:2500]
 
     result_list = svm.predict_proba(input_list)
-    probability_dict = {k: v for k, v in enumerate(result_list[0])}
+    probability_dict = {k: v for k, v in enumerate(result_list[0],1)}
+    logging.info(
+        "----- audio probability (User:Probability): " + str(probability_dict) +"-----")
     return probability_dict
 
 # fusion logic
-def combine_predict(audio_result: int, gesture_result: int) -> int:
-    # if both model predict the same user, return the user
+def combine_predict(audio_result: int, gesture_result: int, new_audio_path:str,audio_model:object, csv_file_path:str, gesture_model:object) -> int:
+    # if both model predict the same user, simply return the user
     if (audio_result == gesture_result):
         return audio_result
     else:
@@ -178,8 +182,11 @@ def combine_predict(audio_result: int, gesture_result: int) -> int:
         gesture_prob = predict_new_gesture_proba(
             csv_file_path, gesture_model)
         joint_prob = {}
+        # for each user, calculate the joint probability
         for user in range(1, 6):
+            # assumoing the probability of each user is independent
             joint_prob[user] = audio_prob[user] * gesture_prob[user]
+        logging.info("----- joint probability (User:Probability): " + str(joint_prob) +"-----")
         return max(joint_prob, key=joint_prob.get)
         
 

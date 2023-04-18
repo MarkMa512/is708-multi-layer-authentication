@@ -74,7 +74,7 @@ async def handle_message(websocket, path):
                 gesture_result = predict_new_gesture(
                     output_gesture_path, gesture_model)
                 # 4. combine result from both predictions
-                combine_prediction = combine_predict(audio_result, gesture_result)
+                combine_prediction = combine_predict(audio_result, gesture_result, f"{output_audio_path}.mp3", audio_model, output_gesture_path, gesture_model)
                 # 5. encode the string as bytes and send it back to the client
                 response = str(combine_prediction)
                 await websocket.send(response)

@@ -15,6 +15,8 @@ with open('model_training/sample.raw', 'rb') as f:
 
 # read a gesture csv  file
 with open('model_training/Gesture/1/1677662440520.csv', 'rb') as f:
+    """For testing models that producing differing result, we can use the following gesture file to test the server"""
+# with open('model_training/Gesture/2/1677688805233.csv', 'rb') as f:
     gesture_file = f.read()
 
 # send the audio as a binary message to the server
