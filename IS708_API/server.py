@@ -1,5 +1,4 @@
 import asyncio
-import sys
 import websockets
 import subprocess
 from prediction import load_models, predict_new_audio, predict_new_gesture, combine_predict
@@ -7,7 +6,7 @@ import logging
 
 # set up logging
 logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s', level=logging.debug)
+    format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # load models
 audio_model, gesture_model = load_models()
@@ -86,9 +85,15 @@ async def handle_message(websocket, path):
                 subprocess.run(['rm', f'{output_audio_path}.raw'])
                 subprocess.run(['rm', f'{output_gesture_path}'])
                 logging.info("Audio and gesture data deleted")
-    except websockets.exceptions.ConnectionClosedError as e:
+    # handle exception when client closes the connection on exit
+    except websockets.exceptions.ConnectionClosedError:
         logging.info("Connection closed by client")
-
+    # handle exception when client closes the connection before the response is sent
+    except websockets.exceptions.ConnectionClosedOK:
+        logging.error("Connection closed by client before response was sent") 
+    # handle other exceptions
+    except Exception as e:
+        logging.error(e)
 
 def convertRawAudio(filePath, outputPath='out/Audio/output.mp3'):
     cmd = ['ffmpeg', '-f', 's16le', '-ar', '44100',
