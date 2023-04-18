@@ -151,30 +151,28 @@ Note that the following softwares will be installed on macOS (as well as the req
 ### Model Training
 1. Unzip the `train_data.zip` into `IS708_API/model_training` directory. Ensure that the Directory structure is as follows: 
 
-```
-  ├── IS708_API  
-  │   ├── model_training  
-  │   │   ├── Audio  
-  │   │   │   ├── 1  
-  │   │   │   │   ├── xxxx.raw 
-  │   │   │   │   ├── ... 
-  │   │   │   ├── 2  
-  │   │   │   ├── 3  
-  │   │   │   ├── 4  
-  │   │   │   ├── 5  
-  │   │   ├── Gesture  
-  │   │   │   ├── 1  
-  │   │   │   │   ├── xxxx.csv
-  │   │   │   │   ├── ...
-  │   │   │   ├── 2  
-  │   │   │   ├── 3  
-  │   │   │   ├── 4  
-  │   │   │   ├── 5  
-  │   │   ├── Audio Classification Notebook.ipynb  
-  │   │   ├── Gesture Classification Notebook.ipynb  
-  │   │   ├── raw_to_mp3.sh  
-  │   │   ├── sample.raw  
-```
+>  ├── IS708_API  
+>  │   ├── model_training  
+>  │   │   ├── Audio  
+>  │   │   │   ├── 1  
+>  │   │   │   │   ├── xxxx.raw 
+>  │   │   │   │   ├── ... 
+>  │   │   │   ├── 2  
+>  │   │   │   ├── 3  
+>  │   │   │   ├── 4  
+>  │   │   │   ├── 5  
+>  │   │   ├── Gesture  
+>  │   │   │   ├── 1  
+>  │   │   │   │   ├── xxxx.csv
+>  │   │   │   │   ├── ...
+>  │   │   │   ├── 2  
+>  │   │   │   ├── 3  
+>  │   │   │   ├── 4  
+>  │   │   │   ├── 5  
+>  │   │   ├── Audio Classification Notebook.ipynb  
+>  │   │   ├── Gesture Classification Notebook.ipynb  
+>  │   │   ├── raw_to_mp3.sh  
+>  │   │   ├── sample.raw  
 
 2. run `raw_to_mp3.sh` to convert the raw format audio to MP3 format for model training
 
@@ -298,7 +296,11 @@ pip uninstall tensorflow
 ```sh
 pip install tensorflow 
 ```
-5. If you encounter the error of `illegal hardware instruction` after running `python server.py `, or continue to experience the error of `The kernel appears to have died. It will restart automatically.`, this is becuase of python was not correctly installed on your Apple Silicon Mac (ie, you have installed Python intended for an Intel Mac). Please try on a Intel-based Mac. To by-pass this issue, you can comment line 42-44 in `prediction.py` and uncomment line 47-50 to disable padding using Tensor Flow, and use Numpy for the padding. However, this may affects the accuracy of the prediction. 
+5. If you encounter the error of `illegal hardware instruction` after running `python server.py `, or continue to experience the error of `The kernel appears to have died. It will restart automatically.`, this is becuase of python was not correctly installed on your Apple Silicon Mac (ie, you have installed Python intended for an Intel Mac). Please try on a Intel-based Mac Instead. 
+
+To by-pass this issue, you can ajust the following lines in `prediction.py`, in `predict_new_audio_proba()` function and `predict_new_audio()`function to disable padding using Tensor Flow, and use Numpy for the padding. 
+
+**However, this may affects the accuracy of the prediction.**
 
 ```py
     """ By default: padding using tensor flow"""
@@ -311,6 +313,12 @@ pip install tensorflow
         input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
     else:
         input_list[0] = input_list[0][:2500]
+```
+
+6. Should you have any further python library/compatibility issue, you can install the required libary with versions specified: 
+
+```sh 
+pip install -r requirement_version.txt
 ```
 
 <!-- ROADMAP -->
