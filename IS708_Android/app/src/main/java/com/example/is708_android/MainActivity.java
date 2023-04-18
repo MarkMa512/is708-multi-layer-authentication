@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
-    // Variables for recording audio
+    // Variables for Audio Recording Feature
     private Button recordAudioButton;
     private boolean isRecording = false;
     private Timer timer;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private AudioRecord audioRecord;
     private Thread recordingThread;
 
-    // Variables for recording gesture
+    // Variables for Gesture Recording Feature
     private Button recordGestureButton;
     private SensorManager sensorManager;
     private Sensor accelerometer;
