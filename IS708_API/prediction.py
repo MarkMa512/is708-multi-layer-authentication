@@ -47,7 +47,7 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> int:
     frequncy_dict = {i: np.count_nonzero(
         result_list == i) for i in range(1, 6)}
     logging.info(
-        "===== gesture prediction result (User:Count): " + str(frequncy_dict))
+        "===== gesture prediction result (User:Count): " + str(frequncy_dict)+ " =====")
     counts = np.bincount(result_list)
     result = np.argmax(counts)
     return result
@@ -202,10 +202,10 @@ def combine_predict(audio_result: int, gesture_result: int, new_audio_path:str,a
         - gesture_model: trained SVM model for gesture
     
     Returns:
-        - If both model predict the same user, simply return the user.
+        - If both models predict the same user, simply return the user.
         - max(joint_prob, key=joint_prob.get)(int): The predicted userID for the given new audio and gesture, with the highest joint probability.
     """
-    # if both model predict the same user, simply return the user
+    # if both models predict the same user, simply return the user
     if (audio_result == gesture_result):
         return audio_result
     else:
@@ -229,18 +229,23 @@ def combine_predict(audio_result: int, gesture_result: int, new_audio_path:str,a
 Testing
 """
 if __name__ == "__main__":
+    # load models
     audio_model, gesture_model = load_models()
 
+    """
+    Simulate a case where by the audio model predicts user 1, and the gesture model predicts user 4
+    """
+    print("===== Simulate a case where by the audio model predicts user 1, and the gesture model predicts user 4 =====")
     csv_file_path = "model_training/Gesture/4/1677727897634.csv"
-
     new_audio_path = "model_training/Audio/1/1677661942148.mp3"
 
+    # obtain audio and gesture prediction results
     audio_result = predict_new_audio(new_audio_path, audio_model)
-
     gesture_result = predict_new_gesture(csv_file_path, gesture_model)
 
-    combine_prediction = combine_predict(audio_result, gesture_result)
+    # combine the prediction results
+    combine_prediction = combine_predict(audio_result, gesture_result, new_audio_path, audio_model, csv_file_path, gesture_model)
 
-    print(audio_result)
-    print(gesture_result)
-    print(combine_prediction)
+    print(f'Audio Result: {audio_result}')
+    print(f'Gesture Result: {gesture_result}')
+    print(f'Combined Result: {combine_prediction}')
