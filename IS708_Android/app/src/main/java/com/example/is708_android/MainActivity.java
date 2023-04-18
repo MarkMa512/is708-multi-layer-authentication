@@ -73,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Variables for sending data over websocket
     private final String SERVER_URL = "ws://10.0.2.2:8086";
+    private WebSocketClient webSocketClient;
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
@@ -278,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         }
+
     }
 
     @Override
@@ -335,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void sendDataOverWebSocket(byte[] byteArray, String serverUrl) throws IOException, URISyntaxException {
         CountDownLatch connectionLatch = new CountDownLatch(1);
         // Create a WebSocket client instance
-        WebSocketClient webSocketClient = new WebSocketClient(new URI(serverUrl)) {
+        webSocketClient = new WebSocketClient(new URI(serverUrl)) {
             @Override
             public void onOpen(ServerHandshake handShakeData) {
                 Log.i("WebSocket", "WebSocket connection opened");
@@ -389,5 +393,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             e.printStackTrace();
         }
     }
+
+    // properly close the websocket connection when the app is closed
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (webSocketClient != null) {
+            webSocketClient.close();
+        }
+    }
+
 
 }
