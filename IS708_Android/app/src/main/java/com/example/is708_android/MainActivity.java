@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // request for audio recording permission
         requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, 1);
         // request for file write permission
-        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        // requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
         // Initialize the record gesture button
         recordGestureButton = findViewById(R.id.capture_gesture_button);
@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         // request for sensor permission
-        requestPermissions(new String[]{android.Manifest.permission.BODY_SENSORS}, 1);
+        // requestPermissions(new String[]{android.Manifest.permission.BODY_SENSORS}, 1);
         //declare the normal permission HIGH_SAMPLING_RATE_SENSORS.
-        requestPermissions(new String[]{android.Manifest.permission.HIGH_SAMPLING_RATE_SENSORS}, 1);
+        // requestPermissions(new String[]{android.Manifest.permission.HIGH_SAMPLING_RATE_SENSORS}, 1);
     }
 
     @SuppressLint("SetTextI18n")
