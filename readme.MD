@@ -238,8 +238,11 @@ The following output should be displayed:
 ### Launch Android Application
 
 1. Open Andorid Studio installed on your machine, open the project under `IS708_Android`. 
-2. Create a emulaor, choosing model Pixel XL API 33 (Andoid Version 13). 
+2. Create a emulator, choosing model Pixel XL API 33 (Andoid Version 13). 
 3. Run the application. 
+  - Should the application ask for Audio Record / Mic Access Permission, please grant the permission for it to properly function. 
+  > Allow IS708_Android to record audio?
+  - Please select: `While using the app` option
 4. Record Audio by pressing the `Record Audio` button. 
 5. Record Gesture by pressing the `Record Gesture` button. 
   - The recorded audio file `audio.raw` and recorded IMU file `gesture.csv` will be saved to the Download Directory inside your Android Emulator. You can access them via the Phone’s File folder, or using adb shell. 
@@ -273,7 +276,7 @@ The following output should be displayed:
 chmod +x shell_script_name.sh
 ```
 
-2. As the programming of this project is done on macOS, if you have the error of `'\r': command not found` when running the script on Linux machine, perform the following command in your terminal: 
+2. As the programming of this project is done on macOS, if you have the error of `'\r': command not found` when running the script on Linux machine, perform the following command in your terminal in the directory containing the files: 
 
 ```sh 
 sed -i 's/\r$//' *
