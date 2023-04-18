@@ -131,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Create the audio file
         try {
             audioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "audio.raw");
+            // Delete the file if it already exists
+            if (audioFile.exists()) {
+                boolean deleted = audioFile.delete();
+                if (!deleted) {
+                    Log.i("MainActivity", "Failed to delete the existing gesture.csv file.");
+                }
+            }
             boolean audioFileCreation = audioFile.createNewFile();
             if (!audioFileCreation) {
                 Log.i("MainActivity", "Audio file creation failed. This may be because the file already exists and it will be overwritten.");
@@ -143,12 +150,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Toast.makeText(this, "Audio Recording started", Toast.LENGTH_SHORT).show();
 
         recordingThread = new Thread(() -> {
-            try (FileOutputStream fos = new FileOutputStream(audioFile)) {
+            // overwrite the file if it already exists
+            try (FileOutputStream fileOutputStream = new FileOutputStream(audioFile, false)) {
                 ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
-
                 while (isRecording) {
                     int bytesRead = audioRecord.read(buffer, bufferSize);
-                    fos.write(buffer.array(), 0, bytesRead);
+                    fileOutputStream.write(buffer.array(), 0, bytesRead);
                     buffer.clear();
                 }
             } catch (IOException e) {
@@ -194,10 +201,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         runOnUiThread(() -> Toast.makeText(this, "Audio Recording Stopped. Data saved to 'Download'.", Toast.LENGTH_SHORT).show());
 
-        /*
-         * Send audio file over webserver
-         * */
-
+         // Send audio file to server
         try {
             byte[] audioArrayByte = convertFileToByteArray(audioFile);
             sendDataOverWebSocket(audioArrayByte, SERVER_URL);
@@ -257,7 +261,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void saveGestureDataToCSV() throws IOException {
         File gestureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), "gesture.csv");
-        try (FileWriter writer = new FileWriter(gestureFile)) {
+
+        // Delete the file if it already exists
+        if (gestureFile.exists()) {
+            boolean deleted = gestureFile.delete();
+            if (!deleted) {
+                Log.i("MainActivity", "Failed to delete the existing gesture.csv file.");
+            }
+        }
+        // Create the file
+        try (FileWriter writer = new FileWriter(gestureFile, false)) {
             writer.write("Timestamp,AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ\n");
             synchronized (gestureData) {
                 for (String line : gestureData) {
