@@ -90,8 +90,6 @@ https://user-images.githubusercontent.com/42110231/232319506-63827e51-b087-43ea-
 - `IS708_API`: Python Backend Server  
   - `model_training`: Training data and Jupyter Note Booking for the Classification Model Building
 
-- `media`: Photos and Screenshots of the project. 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -210,12 +208,12 @@ Note: You may need to use `python3` instead of just `python`, depending on your 
 ```sh 
 python test_client.py
 ```
-Do ensure that `sample.raw` is in folder `IS708_API/model_training`. The following output should be displayed: 
+The following output should be displayed: 
 
 > yyyy-mm-dd hh:mm:14,240 - INFO - Connected to server.  
 > yyyy-mm-dd hh:mm:14,241 - INFO - Sent 257544 bytes of audio data to the server.  
 > yyyy-mm-dd hh:mm:14,242 - INFO - Sent 223684 bytes of gesture data to the server.  
-> yyyy-mm-dd hh:mm:18,475 - INFO - Received response: 3  
+> yyyy-mm-dd hh:mm:18,475 - INFO - Received response: 1  
 > yyyy-mm-dd hh:mm:18,475 - INFO - ========== Server Setup Success! ========== 
 
 ### Launch Android Application
@@ -281,7 +279,7 @@ pip uninstall tensorflow
 ```sh
 pip install tensorflow 
 ```
-5. If you encounter the error of `illegal hardware instruction` after running `python server.py `, or continue to experience the error of `The kernel appears to have died. It will restart automatically.`, this is becuase of python was not correctly installed on your Apple Silicon Mac. Please try on a Intel-based Mac. Alternatively, you can comment line 42-44 in `prediction.py` and uncomment line 47-50 to disable padding using Tensor Flow, and use Numpy for the padding. 
+5. If you encounter the error of `illegal hardware instruction` after running `python server.py `, or continue to experience the error of `The kernel appears to have died. It will restart automatically.`, this is becuase of python was not correctly installed on your Apple Silicon Mac (ie, you have installed Python intended for an Intel Mac). Please try on a Intel-based Mac. To by-pass this issue, you can comment line 42-44 in `prediction.py` and uncomment line 47-50 to disable padding using Tensor Flow, and use Numpy for the padding. However, this may affects the accuracy of the prediction. 
 
 ```py
     """ By default: padding using tensor flow"""
