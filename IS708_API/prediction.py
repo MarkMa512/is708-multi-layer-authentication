@@ -54,7 +54,7 @@ def predict_new_gesture_proba(csv_file_path: str, clf: object) -> list:
         - csv_file_path (str): Path to the CSV contraining IMU sensor reading
 
     Returns:
-        - probabilities (listy): probabilities of each user
+        - probability_dict (dict): userID: probability
     """
     df = pd.read_csv(csv_file_path)
     # Calculate the relative time difference for each row of reading
@@ -62,19 +62,28 @@ def predict_new_gesture_proba(csv_file_path: str, clf: object) -> list:
     df['relative_time'] = df['Timestamp'].apply(
         lambda x: (x - df['Timestamp'][0]))
     df = df.drop(["Timestamp"], axis=1)  # Drop "Timestamp" columns as features
-    # - result_list (numpy.ndarray): An array of predicted label for each row of reading in the CSV file
+    # result_list (numpy.ndarray): An array of predicted label for each row of reading in the CSV file
     result_list = clf.predict(df)
+    # frequncy_dict (dict): A dictionary of user and the number of times the user is predicted
     frequncy_dict = {i: np.count_nonzero(
         result_list == i) for i in range(1, 6)}
-    total_counts = sum(frequncy_dict.values())
-    probability_dict = {k: v / total_counts for k, v in frequncy_dict.items()}
+    # calculates the total number of rows in the CSV file / reading counts
+    total_reading_counts = sum(frequncy_dict.values())
+    # probability_dict (dict): A dictionary of user and the probability of the user
+    # calculated by deviding the number of times the user is predicted by the total number of rows in the CSV file / reading counts
+    probability_dict = {k: v / total_reading_counts for k, v in frequncy_dict.items()}
     logging.info(
         "----- gesture probability (User:Probability): " + str(probability_dict) +"-----")
     return probability_dict
 
 def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
+
     """
-    Read a CSV file of IMU sensor reading and predict the label for each line of reading using trained model clf
+    This function is retired. 
+    """
+
+    """
+    Read a CSV file of IMU sensor reading and predict the label for each line of reading using trained model clf (Integral)
 
     Parameters:
         - csv_file_path (str): Path to the CSV contraining IMU sensor reading
@@ -143,7 +152,7 @@ def predict_new_audio_proba(new_audio_path: str, svm: object, n_mfcc=20) -> dict
         - n_mfcc (int): Number of Mel-frequency cepstral coefficients (MFCC) to extract, default = 20. 
     
     Returns:
-        - probabilities (listy): probabilities of each user
+        - probabilities (dict):  userID: probability
 
     """
     input_list = []
@@ -184,7 +193,7 @@ def combine_predict(audio_result: int, gesture_result: int, new_audio_path:str,a
         joint_prob = {}
         # for each user, calculate the joint probability
         for user in range(1, 6):
-            # assumoing the probability of each user is independent
+            # assuming the probability of each user is independent
             joint_prob[user] = audio_prob[user] * gesture_prob[user]
         logging.info("----- joint probability (User:Probability): " + str(joint_prob) +"-----")
         return max(joint_prob, key=joint_prob.get)
