@@ -5,6 +5,7 @@ parent_dir=Audio;
 
 # Loop through each subfolder
 for folder in "${parent_dir}"/*; do
+    # Check if the subfolder is a directory
     if [[ -d "${folder}" ]]; then
         # Loop through each raw file in the subfolder
         for raw_file in "${folder}"/*.raw; do
