@@ -26,8 +26,7 @@ async def handle_message(websocket, path):
             message = await websocket.recv()
             # Decode the received message as a byte array
             byte_array = bytearray(message)
-            logging.info("Message recieved, byte array of length: " +
-                        byte_array.__len__().__str__())
+            logging.info(f"Message recieved, byte array of length: {byte_array.__len__().__str__()}")
 
             # check the 1st to 4th element, if the input is not a csv file (with content 'Time')
             if (byte_array[0:4] != b'Time'):

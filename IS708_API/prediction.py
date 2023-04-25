@@ -46,8 +46,7 @@ def predict_new_gesture(csv_file_path: str, clf: object) -> int:
     result_list = clf.predict(df)
     frequncy_dict = {i: np.count_nonzero(
         result_list == i) for i in range(1, 6)}
-    logging.info(
-        "===== gesture prediction result (User:Count): " + str(frequncy_dict) + " =====")
+    logging.info(f"===== gesture prediction result (User:Count): {frequncy_dict} =====")
     counts = np.bincount(result_list)
     result = np.argmax(counts)
     return result
@@ -80,8 +79,7 @@ def predict_new_gesture_proba(csv_file_path: str, clf: object) -> dict:
     # calculated by deviding the number of times the user is predicted by the total number of rows in the CSV file / reading counts
     probability_dict = {k: v / total_reading_counts for k,
                         v in frequncy_dict.items()}
-    logging.info(
-        "----- gesture probability (User:Probability): " + str(probability_dict) + "-----")
+    logging.info(f"----- gesture probability (User:Probability): {probability_dict} -----")
     return probability_dict
 
 
@@ -111,8 +109,7 @@ def predict_new_gesture_integral(csv_file_path: str, clf: object) -> int:
     flattened_list = df.to_numpy().flatten().tolist()
     input_list.append(flattened_list)
     result_list = clf.predict(input_list)
-    logging.info("===== gesture prediction result (User): " +
-                 str(result_list[0]) + " =====")
+    logging.info(f"===== gesture prediction result (User): {result_list[0]} =====")
     return result_list[0]
 
 
@@ -136,15 +133,15 @@ def predict_new_audio(new_audio_path: str, svm: object, n_mfcc=20) -> int:
 
     # Padding / truncating the input list to ensure that they are consistent to the length of the training data
     """ By default: padding using tensor flow"""
-    from tensorflow.keras.preprocessing.sequence import pad_sequences
-    input_list = pad_sequences(
-        input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
+    # from tensorflow.keras.preprocessing.sequence import pad_sequences
+    # input_list = pad_sequences(
+    #     input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
 
     """For Apple Silicon Mac: padding using numpy for test with apple silicon"""
-    # if input_list[0].__len__() < 2500:
-    #     input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
-    # else:
-    #     input_list[0] = input_list[0][:2500]
+    if input_list[0].__len__() < 2500:
+        input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
+    else:
+        input_list[0] = input_list[0][:2500]
 
     result_list = svm.predict(input_list)
     logging.info("===== audio prediction result (User): " +
@@ -173,20 +170,19 @@ def predict_new_audio_proba(new_audio_path: str, svm: object, n_mfcc=20) -> dict
 
     # Padding / truncating the input list to ensure that they are consistent to the length of the training data
     """ By default: padding using tensor flow"""
-    from tensorflow.keras.preprocessing.sequence import pad_sequences
-    input_list = pad_sequences(
-        input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
+    # from tensorflow.keras.preprocessing.sequence import pad_sequences
+    # input_list = pad_sequences(
+    #     input_list, maxlen=2500, dtype='float32', padding='post', truncating='post')
 
     """For Apple Silicon Mac: padding using numpy for test with apple silicon"""
-    # if input_list[0].__len__() < 2500:
-    #     input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
-    # else:
-    #     input_list[0] = input_list[0][:2500]
+    if input_list[0].__len__() < 2500:
+        input_list[0].extend([0] * (2500 - input_list[0].__len__())) # padding with 0
+    else:
+        input_list[0] = input_list[0][:2500]
 
     result_list = svm.predict_proba(input_list)
     probability_dict = {k: v for k, v in enumerate(result_list[0], 1)}
-    logging.info(
-        "----- audio probability (User:Probability): " + str(probability_dict) + "-----")
+    logging.info(f"----- audio probability (User:Probability): {probability_dict} -----")
     return probability_dict
 
 
@@ -227,8 +223,7 @@ def combine_predict(audio_result: int, gesture_result: int, new_audio_path: str,
             # since the action of speaking does not affect the gesture performance,
             # and both models are trained independently, we assume that the joint probability is the product of the individual probabilities
             joint_prob[user] = audio_prob[user] * gesture_prob[user]
-        logging.info("----- joint probability (User:Probability): " +
-                     str(joint_prob) + "-----")
+        logging.info(f"----- joint probability (User:Probability): {joint_prob} -----")
         return max(joint_prob, key=joint_prob.get)
 
 
